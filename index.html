@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitcoin Correlation Dashboard | Herdvibe</title>
+<meta name="description" content="Bitcoin weekly chart with rolling correlation against SPY, QQQ, IGV, GLD, DXY">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Bitcoin Correlation Dashboard">
+<meta property="og:description" content="비트코인과 주요 자산 간 상관관계 분석">
+<meta property="og:type" content="website">
+
+<!-- TradingView Lightweight Charts -->
+<script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #16161f;
+    --bg-hover: #1e1e2a;
+    --border: #2a2a3a;
+    --text-primary: #e8e8f0;
+    --text-secondary: #8888a0;
+    --text-muted: #555570;
+    --accent-green: #00d4aa;
+    --accent-red: #ff4466;
+    --accent-blue: #4488ff;
+    --accent-purple: #aa66ff;
+    --accent-emerald: #22cc88;
+    --accent-gold: #ffcc00;
+    --accent-orange: #ff7744;
+    --color-spy: #4488ff;
+    --color-qqq: #aa66ff;
+    --color-igv: #22cc88;
+    --color-gld: #ffcc00;
+    --color-dxy: #ff4466;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === Header === */
+  .header {
+    padding: 20px 24px 12px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 14px;
+    color: #000;
+    flex-shrink: 0;
+  }
+
+  .title-block h1 {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .title-block .subtitle {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .btc-price {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .btc-price .dollar { color: var(--text-muted); font-weight: 400; }
+
+  .update-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-align: right;
+  }
+
+  /* === Controls === */
+  .controls {
+    padding: 8px 24px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+  }
+
+  .control-group label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .control-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+
+  .control-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .control-btn.active { background: var(--accent-blue); color: #fff; }
+
+  /* Asset toggle buttons */
+  .asset-toggles {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .asset-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .asset-btn:hover { background: var(--bg-hover); }
+
+  .asset-btn.active {
+    color: #fff;
+  }
+
+  .asset-btn[data-asset="SPY"].active { background: var(--color-spy); border-color: var(--color-spy); }
+  .asset-btn[data-asset="QQQ"].active { background: var(--color-qqq); border-color: var(--color-qqq); }
+  .asset-btn[data-asset="IGV"].active { background: var(--color-igv); border-color: var(--color-igv); }
+  .asset-btn[data-asset="GLD"].active { background: var(--color-gld); border-color: var(--color-gld); color: #000; }
+  .asset-btn[data-asset="DXY"].active { background: var(--color-dxy); border-color: var(--color-dxy); }
+
+  /* === Charts === */
+  .chart-container {
+    padding: 0 24px;
+  }
+
+  .candlestick-wrapper {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 12px;
+  }
+
+  .chart-label {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    z-index: 10;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .chart-label span {
+    font-size: 10px;
+    font-weight: 400;
+  }
+
+  #candlestick-chart {
+    width: 100%;
+  }
+
+  .correlation-wrapper {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .correlation-wrapper .chart-label {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-bottom: 12px;
+  }
+
+  #correlation-chart {
+    width: 100%;
+    height: 280px;
+  }
+
+  /* Watermark */
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-mono);
+    font-size: 48px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.02);
+    pointer-events: none;
+    z-index: 1;
+    white-space: nowrap;
+    letter-spacing: 4px;
+  }
+
+  /* === Correlation Legend / Stats === */
+  .corr-stats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 8px 24px 4px;
+    margin-bottom: 8px;
+  }
+
+  .corr-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .corr-stat-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .corr-stat-name { color: var(--text-secondary); }
+  .corr-stat-value { font-weight: 700; }
+
+  .corr-positive { color: var(--accent-green); }
+  .corr-negative { color: var(--accent-red); }
+  .corr-neutral { color: var(--text-secondary); }
+
+  /* === Footer / Share === */
+  .footer {
+    padding: 12px 24px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-text {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .share-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .share-btn {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+
+  .share-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+  }
+
+  /* Loading */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.4s;
+  }
+
+  .loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loading-text {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--text-secondary);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header { padding: 16px 16px 8px; }
+    .controls { padding: 8px 16px; }
+    .chart-container { padding: 0 16px; }
+    .footer { padding: 12px 16px 20px; }
+    .btc-price { font-size: 22px; }
+    .title-block h1 { font-size: 16px; }
+    .corr-stats { padding: 8px 16px 4px; }
+    #correlation-chart { height: 220px; }
+    .watermark { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="loading-text">Loading data...</div>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">HV</div>
+    <div class="title-block">
+      <h1>₿ Bitcoin Correlation</h1>
+      <div class="subtitle">Weekly · Rolling Correlation with Major Assets</div>
+    </div>
+  </div>
+  <div>
+    <div class="btc-price">
+      <span class="dollar">$</span><span id="btc-price-value">--</span>
+    </div>
+    <div class="update-badge">Updated: <span id="last-updated">--</span></div>
+  </div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <div class="control-group">
+    <label>Period</label>
+    <button class="control-btn" data-period="13" onclick="setPeriod(13)">13W</button>
+    <button class="control-btn active" data-period="26" onclick="setPeriod(26)">26W</button>
+    <button class="control-btn" data-period="52" onclick="setPeriod(52)">52W</button>
+  </div>
+
+  <div class="asset-toggles">
+    <button class="asset-btn active" data-asset="SPY" onclick="toggleAsset('SPY')">SPY</button>
+    <button class="asset-btn active" data-asset="QQQ" onclick="toggleAsset('QQQ')">QQQ</button>
+    <button class="asset-btn active" data-asset="IGV" onclick="toggleAsset('IGV')">IGV</button>
+    <button class="asset-btn active" data-asset="GLD" onclick="toggleAsset('GLD')">GLD</button>
+    <button class="asset-btn active" data-asset="DXY" onclick="toggleAsset('DXY')">DXY</button>
+  </div>
+</div>
+
+<!-- Current Correlation Stats -->
+<div class="corr-stats" id="corr-stats"></div>
+
+<!-- Charts -->
+<div class="chart-container">
+  <div class="candlestick-wrapper">
+    <div class="chart-label">BTC/USD <span>WEEKLY</span></div>
+    <div class="watermark">HERDVIBE</div>
+    <div id="candlestick-chart"></div>
+  </div>
+
+  <div class="correlation-wrapper">
+    <div class="chart-label" id="corr-title">26-Week Rolling Correlation with Bitcoin</div>
+    <div class="watermark" style="font-size:36px;">HERDVIBE</div>
+    <canvas id="correlation-chart"></canvas>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-text">herdvibe.com · Data: Yahoo Finance · Auto-updated daily</div>
+  <div class="share-buttons">
+    <a class="share-btn" id="share-x" href="#" target="_blank">𝕏 Share</a>
+    <a class="share-btn" id="share-kakao" href="#" target="_blank">💬 KakaoTalk</a>
+    <a class="share-btn" id="share-telegram" href="#" target="_blank">✈️ Telegram</a>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// State
+// ============================================================
+let DATA = null;
+let currentPeriod = 26;
+let activeAssets = new Set(['SPY', 'QQQ', 'IGV', 'GLD', 'DXY']);
+let candlestickChart = null;
+let correlationChart = null;
+
+const ASSET_COLORS = {
+  SPY: { line: '#4488ff', bg: 'rgba(68,136,255,0.08)' },
+  QQQ: { line: '#aa66ff', bg: 'rgba(170,102,255,0.08)' },
+  IGV: { line: '#22cc88', bg: 'rgba(34,204,136,0.08)' },
+  GLD: { line: '#ffcc00', bg: 'rgba(255,204,0,0.08)' },
+  DXY: { line: '#ff4466', bg: 'rgba(255,68,102,0.08)' },
+};
+
+const ASSET_LABELS = {
+  SPY: 'S&P 500',
+  QQQ: 'NASDAQ 100',
+  IGV: 'Software',
+  GLD: 'Gold',
+  DXY: 'US Dollar',
+};
+
+// ============================================================
+// Load Data
+// ============================================================
+async function loadData() {
+  try {
+    const resp = await fetch('data.json');
+    DATA = await resp.json();
+  } catch (e) {
+    console.error('Failed to load data.json:', e);
+    document.getElementById('loading').innerHTML =
+      '<div class="loading-text" style="color:#ff4466;">Failed to load data. Check data.json</div>';
+    return;
+  }
+
+  document.getElementById('btc-price-value').textContent =
+    Number(DATA.btcLatest).toLocaleString('en-US', { maximumFractionDigits: 0 });
+  document.getElementById('last-updated').textContent = DATA.lastUpdated;
+
+  initCandlestickChart();
+  initCorrelationChart();
+  updateCorrelationStats();
+  setupShareLinks();
+
+  setTimeout(() => document.getElementById('loading').classList.add('hidden'), 300);
+}
+
+// ============================================================
+// Candlestick Chart (TradingView Lightweight Charts)
+// ============================================================
+function initCandlestickChart() {
+  const container = document.getElementById('candlestick-chart');
+  const width = container.parentElement.clientWidth;
+  const height = Math.min(420, window.innerHeight * 0.38);
+
+  candlestickChart = LightweightCharts.createChart(container, {
+    width: width,
+    height: height,
+    layout: {
+      background: { type: 'solid', color: 'transparent' },
+      textColor: '#555570',
+      fontFamily: "'JetBrains Mono', monospace",
+      fontSize: 11,
+    },
+    grid: {
+      vertLines: { color: 'rgba(42, 42, 58, 0.5)' },
+      horzLines: { color: 'rgba(42, 42, 58, 0.5)' },
+    },
+    crosshair: {
+      mode: LightweightCharts.CrosshairMode.Normal,
+      vertLine: { color: 'rgba(255,255,255,0.1)', width: 1, style: 3 },
+      horzLine: { color: 'rgba(255,255,255,0.1)', width: 1, style: 3 },
+    },
+    rightPriceScale: {
+      borderColor: 'rgba(42, 42, 58, 0.5)',
+      scaleMargins: { top: 0.1, bottom: 0.05 },
+    },
+    timeScale: {
+      borderColor: 'rgba(42, 42, 58, 0.5)',
+      timeVisible: false,
+      fixLeftEdge: true,
+      fixRightEdge: true,
+    },
+    handleScroll: { vertTouchDrag: false },
+  });
+
+  const series = candlestickChart.addCandlestickSeries({
+    upColor: '#00d4aa',
+    downColor: '#ff4466',
+    borderUpColor: '#00d4aa',
+    borderDownColor: '#ff4466',
+    wickUpColor: '#00d4aa',
+    wickDownColor: '#ff4466',
+  });
+
+  const candleData = DATA.candles
+    .filter(c => c.o && c.h && c.l && c.c)
+    .map(c => ({
+      time: c.t,
+      open: c.o,
+      high: c.h,
+      low: c.l,
+      close: c.c,
+    }));
+
+  series.setData(candleData);
+  candlestickChart.timeScale().fitContent();
+
+  // Responsive
+  const ro = new ResizeObserver(() => {
+    candlestickChart.applyOptions({ width: container.parentElement.clientWidth });
+  });
+  ro.observe(container.parentElement);
+}
+
+// ============================================================
+// Correlation Chart (Chart.js)
+// ============================================================
+function initCorrelationChart() {
+  const ctx = document.getElementById('correlation-chart').getContext('2d');
+
+  correlationChart = new Chart(ctx, {
+    type: 'line',
+    data: { datasets: [] },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(22, 22, 31, 0.95)',
+          borderColor: 'rgba(42, 42, 58, 1)',
+          borderWidth: 1,
+          titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
+          padding: 12,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(ctx) {
+              const val = ctx.parsed.y;
+              if (val === null || val === undefined) return null;
+              const sign = val >= 0 ? '+' : '';
+              return `  ${ctx.dataset.label}: ${sign}${val.toFixed(3)}`;
+            }
+          }
+        },
+      },
+      scales: {
+        x: {
+          type: 'time',
+          time: { unit: 'year', displayFormats: { year: 'yyyy' } },
+          grid: { color: 'rgba(42, 42, 58, 0.5)' },
+          ticks: {
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            color: '#555570',
+            maxTicksLimit: 12,
+          },
+          border: { color: 'rgba(42, 42, 58, 0.5)' },
+        },
+        y: {
+          min: -1,
+          max: 1,
+          grid: { color: 'rgba(42, 42, 58, 0.3)' },
+          ticks: {
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            color: '#555570',
+            stepSize: 0.25,
+            callback: v => v.toFixed(2),
+          },
+          border: { color: 'rgba(42, 42, 58, 0.5)' },
+        },
+      },
+      elements: {
+        point: { radius: 0, hoverRadius: 4 },
+        line: { borderWidth: 2 },
+      },
+    },
+    plugins: [
+      // Zero line
+      {
+        id: 'zeroLine',
+        beforeDraw(chart) {
+          const { ctx, chartArea, scales } = chart;
+          if (!chartArea) return;
+          const y0 = scales.y.getPixelForValue(0);
+          ctx.save();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([6, 4]);
+          ctx.beginPath();
+          ctx.moveTo(chartArea.left, y0);
+          ctx.lineTo(chartArea.right, y0);
+          ctx.stroke();
+          ctx.restore();
+        }
+      },
+      // Extreme zones
+      {
+        id: 'extremeZones',
+        beforeDraw(chart) {
+          const { ctx, chartArea, scales } = chart;
+          if (!chartArea) return;
+          ctx.save();
+
+          // Strong positive zone (>0.75)
+          const y75 = scales.y.getPixelForValue(0.75);
+          const y1 = scales.y.getPixelForValue(1);
+          ctx.fillStyle = 'rgba(0, 212, 170, 0.04)';
+          ctx.fillRect(chartArea.left, y1, chartArea.width, y75 - y1);
+
+          // Strong negative zone (<-0.75)
+          const yN75 = scales.y.getPixelForValue(-0.75);
+          const yN1 = scales.y.getPixelForValue(-1);
+          ctx.fillStyle = 'rgba(255, 68, 102, 0.04)';
+          ctx.fillRect(chartArea.left, yN75, chartArea.width, yN1 - yN75);
+
+          ctx.restore();
+        }
+      }
+    ],
+  });
+
+  updateCorrelationData();
+}
+
+function updateCorrelationData() {
+  if (!DATA || !correlationChart) return;
+
+  const corrData = DATA.correlations[String(currentPeriod)];
+  if (!corrData) return;
+
+  const datasets = [];
+
+  for (const asset of ['SPY', 'QQQ', 'IGV', 'GLD', 'DXY']) {
+    if (!activeAssets.has(asset)) continue;
+
+    const points = corrData
+      .filter(d => d[asset] !== null && d[asset] !== undefined)
+      .map(d => ({ x: d.t, y: d[asset] }));
+
+    datasets.push({
+      label: `${asset} (${ASSET_LABELS[asset]})`,
+      data: points,
+      borderColor: ASSET_COLORS[asset].line,
+      backgroundColor: ASSET_COLORS[asset].bg,
+      fill: false,
+      tension: 0.3,
+      borderWidth: 2,
+    });
+  }
+
+  correlationChart.data.datasets = datasets;
+  correlationChart.update('none');
+
+  // Update title
+  document.getElementById('corr-title').textContent =
+    `${currentPeriod}-Week Rolling Correlation with Bitcoin`;
+}
+
+// ============================================================
+// Correlation Stats (current values)
+// ============================================================
+function updateCorrelationStats() {
+  if (!DATA) return;
+  const corrData = DATA.correlations[String(currentPeriod)];
+  if (!corrData) return;
+
+  const latest = corrData[corrData.length - 1];
+  const container = document.getElementById('corr-stats');
+  container.innerHTML = '';
+
+  for (const asset of ['SPY', 'QQQ', 'IGV', 'GLD', 'DXY']) {
+    if (!activeAssets.has(asset)) continue;
+
+    const val = latest[asset];
+    if (val === null || val === undefined) continue;
+
+    const cls = val > 0.1 ? 'corr-positive' : val < -0.1 ? 'corr-negative' : 'corr-neutral';
+    const sign = val >= 0 ? '+' : '';
+
+    const item = document.createElement('div');
+    item.className = 'corr-stat-item';
+    item.innerHTML = `
+      <div class="corr-stat-dot" style="background:${ASSET_COLORS[asset].line}"></div>
+      <span class="corr-stat-name">${asset}</span>
+      <span class="corr-stat-value ${cls}">${sign}${val.toFixed(3)}</span>
+    `;
+    container.appendChild(item);
+  }
+}
+
+// ============================================================
+// Controls
+// ============================================================
+function setPeriod(p) {
+  currentPeriod = p;
+  document.querySelectorAll('[data-period]').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.period) === p);
+  });
+  updateCorrelationData();
+  updateCorrelationStats();
+}
+
+function toggleAsset(asset) {
+  const btn = document.querySelector(`[data-asset="${asset}"]`);
+  if (activeAssets.has(asset)) {
+    activeAssets.delete(asset);
+    btn.classList.remove('active');
+  } else {
+    activeAssets.add(asset);
+    btn.classList.add('active');
+  }
+  updateCorrelationData();
+  updateCorrelationStats();
+}
+
+// ============================================================
+// Share
+// ============================================================
+function setupShareLinks() {
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent(`₿ Bitcoin Correlation Dashboard - 비트코인과 주요 자산 상관관계 분석\n\nBTC: $${Number(DATA.btcLatest).toLocaleString()}`);
+
+  document.getElementById('share-x').href =
+    `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+  document.getElementById('share-kakao').href =
+    `https://story.kakao.com/share?url=${url}`;
+  document.getElementById('share-telegram').href =
+    `https://t.me/share/url?url=${url}&text=${text}`;
+}
+
+// ============================================================
+// Sync crosshair between charts
+// ============================================================
+function setupCrosshairSync() {
+  if (!candlestickChart) return;
+
+  candlestickChart.subscribeCrosshairMove(param => {
+    if (!param.time || !correlationChart) return;
+    // Highlight corresponding point on correlation chart
+    const timeStr = param.time;
+    // Chart.js doesn't have direct crosshair sync, but tooltip mode 'index' handles it
+  });
+}
+
+// ============================================================
+// Init
+// ============================================================
+loadData().then(() => {
+  setupCrosshairSync();
+});
+</script>
+</body>
+</html>
