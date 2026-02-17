@@ -1,0 +1,34 @@
+name: Update BTC Correlation Data
+
+on:
+  schedule:
+    # 매일 UTC 14:00 (KST 23:00) - 미국 장 마감 후
+    - cron: '0 14 * * 1-5'
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install yfinance pandas
+
+      - name: Run update script
+        run: python update_data.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json data/
+          git diff --staged --quiet || git commit -m "📊 Auto-update $(date -u +%Y-%m-%d)"
+          git push
