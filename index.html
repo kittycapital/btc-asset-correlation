@@ -256,6 +256,12 @@
 
   #correlation-chart {
     width: 100%;
+    max-height: 280px;
+  }
+
+  .corr-chart-box {
+    position: relative;
+    width: 100%;
     height: 280px;
   }
 
@@ -384,7 +390,8 @@
     .btc-price { font-size: 22px; }
     .title-block h1 { font-size: 16px; }
     .corr-stats { padding: 8px 16px 4px; }
-    #correlation-chart { height: 220px; }
+    #correlation-chart { max-height: 220px; }
+    .corr-chart-box { height: 220px; }
     .watermark { font-size: 28px; }
   }
 </style>
@@ -444,7 +451,9 @@
   <div class="correlation-wrapper">
     <div class="chart-label" id="corr-title">26-Week Rolling Correlation with Bitcoin</div>
     <div class="watermark" style="font-size:36px;">HERDVIBE</div>
-    <canvas id="correlation-chart"></canvas>
+    <div class="corr-chart-box">
+      <canvas id="correlation-chart"></canvas>
+    </div>
   </div>
 </div>
 
@@ -787,7 +796,7 @@ function toggleAsset(asset) {
 // Share
 // ============================================================
 function setupShareLinks() {
-  const url = encodeURIComponent(window.location.href);
+  const url = encodeURIComponent('https://herdvibe.com/84');
   const text = encodeURIComponent(`₿ Bitcoin Correlation Dashboard - 비트코인과 주요 자산 상관관계 분석\n\nBTC: $${Number(DATA.btcLatest).toLocaleString()}`);
 
   document.getElementById('share-x').href =
