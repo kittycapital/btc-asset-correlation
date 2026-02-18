@@ -19,452 +19,427 @@
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    --bg-primary: #0a0a0f;
-    --bg-secondary: #12121a;
-    --bg-card: #16161f;
-    --bg-hover: #1e1e2a;
-    --border: #2a2a3a;
-    --text-primary: #e8e8f0;
-    --text-secondary: #8888a0;
-    --text-muted: #555570;
-    --accent-green: #00d4aa;
-    --accent-red: #ff4466;
-    --accent-blue: #4488ff;
-    --accent-purple: #aa66ff;
-    --accent-emerald: #22cc88;
-    --accent-gold: #ffcc00;
-    --accent-orange: #ff7744;
-    --color-spy: #4488ff;
-    --color-qqq: #aa66ff;
-    --color-igv: #22cc88;
-    --color-gld: #ffcc00;
-    --color-dxy: #ff4466;
-    --font-mono: 'JetBrains Mono', monospace;
-    --font-sans: 'Inter', sans-serif;
-  }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+    ::-webkit-scrollbar { display: none; }
+    * {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 
-  body {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    font-family: var(--font-sans);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+    :root {
+        --bg-primary: #0a0a0a;
+        --bg-secondary: #111111;
+        --bg-tertiary: #1a1a1a;
+        --text-primary: #ffffff;
+        --text-secondary: #888888;
+        --text-muted: #555555;
+        --accent-green: #00d4aa;
+        --accent-red: #ff4757;
+        --accent-yellow: #ffd43b;
+        --accent-blue: #4dabf7;
+        --border-color: #2a2a2a;
+        --color-spy: #4dabf7;
+        --color-qqq: #b197fc;
+        --color-igv: #00d4aa;
+        --color-gld: #ffd43b;
+        --color-dxy: #ff4757;
+    }
 
-  /* === Header === */
-  .header {
-    padding: 20px 24px 12px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
+    html, body { overflow-x: hidden; }
 
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
+    body {
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        min-height: 100vh;
+        line-height: 1.6;
+    }
 
-  .logo {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    font-size: 14px;
-    color: #000;
-    flex-shrink: 0;
-  }
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
-  .title-block h1 {
-    font-family: var(--font-mono);
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: var(--text-primary);
-    line-height: 1.2;
-  }
+    /* Header */
+    .header {
+        text-align: center;
+        padding: 30px 0 20px;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 20px;
+    }
 
-  .title-block .subtitle {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
+    .header h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        margin-bottom: 6px;
+        background: linear-gradient(135deg, #fff 0%, #888 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
 
-  .btc-price {
-    font-family: var(--font-mono);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1;
-  }
+    .header p {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+    }
 
-  .btc-price .dollar { color: var(--text-muted); font-weight: 400; }
+    .header .btc-price {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-top: 10px;
+        -webkit-text-fill-color: initial;
+    }
 
-  .update-badge {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-top: 4px;
-    text-align: right;
-  }
+    .header .btc-price .dollar {
+        color: var(--text-muted);
+        font-weight: 400;
+    }
 
-  /* === Controls === */
-  .controls {
-    padding: 8px 24px 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
+    .header .update-badge {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
 
-  .control-group {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 3px;
-  }
+    /* Controls */
+    .controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
 
-  .control-group label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text-muted);
-    padding: 0 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+    .control-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 4px;
+    }
 
-  .control-btn {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    background: transparent;
-    color: var(--text-secondary);
-    transition: all 0.15s;
-  }
+    .control-group label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        padding: 0 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-  .control-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
-  .control-btn.active { background: var(--accent-blue); color: #fff; }
+    .control-btn {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 8px 14px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+    }
 
-  /* Asset toggle buttons */
-  .asset-toggles {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
+    .control-btn:hover {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+    }
 
-  .asset-btn {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 6px 14px;
-    border: 2px solid transparent;
-    border-radius: 6px;
-    cursor: pointer;
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    transition: all 0.15s;
-    position: relative;
-  }
+    .control-btn.active {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--accent-yellow);
+        color: var(--text-primary);
+        box-shadow: 0 0 12px rgba(255, 212, 59, 0.1);
+    }
 
-  .asset-btn:hover { background: var(--bg-hover); }
+    .asset-toggles {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
 
-  .asset-btn.active {
-    color: #fff;
-  }
+    .asset-btn {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 8px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        cursor: pointer;
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+    }
 
-  .asset-btn[data-asset="SPY"].active { background: var(--color-spy); border-color: var(--color-spy); }
-  .asset-btn[data-asset="QQQ"].active { background: var(--color-qqq); border-color: var(--color-qqq); }
-  .asset-btn[data-asset="IGV"].active { background: var(--color-igv); border-color: var(--color-igv); }
-  .asset-btn[data-asset="GLD"].active { background: var(--color-gld); border-color: var(--color-gld); color: #000; }
-  .asset-btn[data-asset="DXY"].active { background: var(--color-dxy); border-color: var(--color-dxy); }
+    .asset-btn:hover { background: var(--bg-tertiary); border-color: #3a3a3a; }
+    .asset-btn.active { color: #fff; }
+    .asset-btn[data-asset="SPY"].active { background: var(--bg-tertiary); border-color: var(--color-spy); box-shadow: 0 0 12px rgba(77,171,247,0.15); }
+    .asset-btn[data-asset="QQQ"].active { background: var(--bg-tertiary); border-color: var(--color-qqq); box-shadow: 0 0 12px rgba(177,151,252,0.15); }
+    .asset-btn[data-asset="IGV"].active { background: var(--bg-tertiary); border-color: var(--color-igv); box-shadow: 0 0 12px rgba(0,212,170,0.15); }
+    .asset-btn[data-asset="GLD"].active { background: var(--bg-tertiary); border-color: var(--color-gld); box-shadow: 0 0 12px rgba(255,212,59,0.15); color: var(--color-gld); }
+    .asset-btn[data-asset="DXY"].active { background: var(--bg-tertiary); border-color: var(--color-dxy); box-shadow: 0 0 12px rgba(255,71,87,0.15); }
 
-  /* === Charts === */
-  .chart-container {
-    padding: 0 24px;
-  }
+    /* Correlation Stats */
+    .corr-stats {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
 
-  .candlestick-wrapper {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    margin-bottom: 12px;
-  }
+    .corr-stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+    }
 
-  .chart-label {
-    position: absolute;
-    top: 12px;
-    left: 16px;
-    z-index: 10;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    pointer-events: none;
-  }
+    .corr-stat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .corr-stat-name { color: var(--text-secondary); }
+    .corr-stat-value { font-weight: 600; }
+    .corr-positive { color: var(--accent-green); }
+    .corr-negative { color: var(--accent-red); }
+    .corr-neutral { color: var(--text-secondary); }
 
-  .chart-label span {
-    font-size: 10px;
-    font-weight: 400;
-  }
+    /* Chart Sections */
+    .chart-section {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+    }
 
-  #candlestick-chart {
-    width: 100%;
-  }
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
 
-  .correlation-wrapper {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    position: relative;
-    margin-bottom: 16px;
-  }
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
 
-  .correlation-wrapper .chart-label {
-    position: relative;
-    top: 0;
-    left: 0;
-    margin-bottom: 12px;
-  }
+    .section-subtitle {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
 
-  #correlation-chart {
-    width: 100%;
-    max-height: 280px;
-  }
+    #candlestick-chart { width: 100%; }
 
-  .corr-chart-box {
-    position: relative;
-    width: 100%;
-    height: 280px;
-  }
+    .corr-chart-box {
+        position: relative;
+        width: 100%;
+        height: 280px;
+    }
 
-  /* Watermark */
-  .watermark {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: var(--font-mono);
-    font-size: 48px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.02);
-    pointer-events: none;
-    z-index: 1;
-    white-space: nowrap;
-    letter-spacing: 4px;
-  }
+    #correlation-chart {
+        width: 100%;
+        max-height: 280px;
+    }
 
-  /* === Correlation Legend / Stats === */
-  .corr-stats {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    padding: 8px 24px 4px;
-    margin-bottom: 8px;
-  }
+    .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 48px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.015);
+        pointer-events: none;
+        z-index: 1;
+        white-space: nowrap;
+        letter-spacing: 4px;
+    }
 
-  .corr-stat-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-  }
+    /* Footer */
+    .footer {
+        text-align: center;
+        padding: 20px;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+    }
 
-  .corr-stat-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 3px;
-    flex-shrink: 0;
-  }
+    .share-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 10px;
+    }
 
-  .corr-stat-name { color: var(--text-secondary); }
-  .corr-stat-value { font-weight: 700; }
+    .share-btn {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        padding: 6px 14px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
 
-  .corr-positive { color: var(--accent-green); }
-  .corr-negative { color: var(--accent-red); }
-  .corr-neutral { color: var(--text-secondary); }
+    .share-btn:hover {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        border-color: #3a3a3a;
+    }
 
-  /* === Footer / Share === */
-  .footer {
-    padding: 12px 24px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
+    /* Loading */
+    .loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: var(--bg-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        transition: opacity 0.4s;
+    }
 
-  .footer-text {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text-muted);
-  }
+    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
 
-  .share-buttons {
-    display: flex;
-    gap: 8px;
-  }
+    .spinner {
+        width: 30px;
+        height: 30px;
+        border: 3px solid var(--border-color);
+        border-top-color: var(--accent-yellow);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
 
-  .share-btn {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    padding: 6px 12px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.15s;
-    text-decoration: none;
-  }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-  .share-btn:hover {
-    background: var(--bg-hover);
-    color: var(--text-primary);
-    border-color: var(--text-muted);
-  }
+    /* Responsive */
+    @media (max-width: 768px) {
+        .container { padding: 12px; }
+        .header { padding: 20px 0 15px; margin-bottom: 15px; }
+        .header h1 { font-size: 1.4rem; }
+        .header p { font-size: 0.75rem; }
+        .header .btc-price { font-size: 1.6rem; }
+        .controls { gap: 6px; margin-bottom: 15px; }
+        .control-btn { padding: 6px 10px; font-size: 0.65rem; }
+        .asset-btn { padding: 6px 10px; font-size: 0.65rem; }
+        .chart-section { padding: 15px 12px; border-radius: 10px; margin-bottom: 15px; }
+        .section-title { font-size: 1rem; }
+        .corr-chart-box { height: 220px; }
+        #correlation-chart { max-height: 220px; }
+        .corr-stats { gap: 10px; }
+        .corr-stat-item { font-size: 0.65rem; }
+        .watermark { font-size: 28px; }
+        .footer { padding: 15px; font-size: 0.65rem; }
+    }
 
-  /* Loading */
-  .loading-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--bg-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    transition: opacity 0.4s;
-  }
-
-  .loading-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .loading-text {
-    font-family: var(--font-mono);
-    font-size: 14px;
-    color: var(--text-secondary);
-    animation: pulse 1.5s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .header { padding: 16px 16px 8px; }
-    .controls { padding: 8px 16px; }
-    .chart-container { padding: 0 16px; }
-    .footer { padding: 12px 16px 20px; }
-    .btc-price { font-size: 22px; }
-    .title-block h1 { font-size: 16px; }
-    .corr-stats { padding: 8px 16px 4px; }
-    #correlation-chart { max-height: 220px; }
-    .corr-chart-box { height: 220px; }
-    .watermark { font-size: 28px; }
-  }
+    @media (max-width: 480px) {
+        .container { padding: 10px; }
+        .header h1 { font-size: 1.2rem; }
+        .header .btc-price { font-size: 1.4rem; }
+        .control-btn { padding: 5px 8px; font-size: 0.6rem; }
+        .asset-btn { padding: 5px 8px; font-size: 0.6rem; }
+        .section-title { font-size: 0.9rem; }
+    }
 </style>
 </head>
 <body>
 
 <div class="loading-overlay" id="loading">
-  <div class="loading-text">Loading data...</div>
+    <div class="spinner"></div>
 </div>
 
-<!-- Header -->
-<div class="header">
-  <div class="header-left">
-    <div class="logo">HV</div>
-    <div class="title-block">
-      <h1>₿ Bitcoin Correlation</h1>
-      <div class="subtitle">Weekly · Rolling Correlation with Major Assets</div>
-    </div>
-  </div>
-  <div>
-    <div class="btc-price">
-      <span class="dollar">$</span><span id="btc-price-value">--</span>
-    </div>
-    <div class="update-badge">Updated: <span id="last-updated">--</span></div>
-  </div>
-</div>
+<div class="container">
+    <!-- Header -->
+    <header class="header">
+        <h1>비트코인 자산 상관관계</h1>
+        <p>주간 롤링 상관계수 · SPY · QQQ · IGV · GLD · DXY</p>
+        <div class="btc-price">
+            <span class="dollar">$</span><span id="btc-price-value">--</span>
+        </div>
+        <div class="update-badge">Updated: <span id="last-updated">--</span></div>
+    </header>
 
-<!-- Controls -->
-<div class="controls">
-  <div class="control-group">
-    <label>Period</label>
-    <button class="control-btn" data-period="13" onclick="setPeriod(13)">13W</button>
-    <button class="control-btn active" data-period="26" onclick="setPeriod(26)">26W</button>
-    <button class="control-btn" data-period="52" onclick="setPeriod(52)">52W</button>
-  </div>
+    <!-- Controls -->
+    <nav class="controls">
+        <div class="control-group">
+            <label>Period</label>
+            <button class="control-btn" data-period="13" onclick="setPeriod(13)">13W</button>
+            <button class="control-btn active" data-period="26" onclick="setPeriod(26)">26W</button>
+            <button class="control-btn" data-period="52" onclick="setPeriod(52)">52W</button>
+        </div>
+        <div class="asset-toggles">
+            <button class="asset-btn active" data-asset="SPY" onclick="toggleAsset('SPY')">SPY</button>
+            <button class="asset-btn active" data-asset="QQQ" onclick="toggleAsset('QQQ')">QQQ</button>
+            <button class="asset-btn active" data-asset="IGV" onclick="toggleAsset('IGV')">IGV</button>
+            <button class="asset-btn active" data-asset="GLD" onclick="toggleAsset('GLD')">GLD</button>
+            <button class="asset-btn active" data-asset="DXY" onclick="toggleAsset('DXY')">DXY</button>
+        </div>
+    </nav>
 
-  <div class="asset-toggles">
-    <button class="asset-btn active" data-asset="SPY" onclick="toggleAsset('SPY')">SPY</button>
-    <button class="asset-btn active" data-asset="QQQ" onclick="toggleAsset('QQQ')">QQQ</button>
-    <button class="asset-btn active" data-asset="IGV" onclick="toggleAsset('IGV')">IGV</button>
-    <button class="asset-btn active" data-asset="GLD" onclick="toggleAsset('GLD')">GLD</button>
-    <button class="asset-btn active" data-asset="DXY" onclick="toggleAsset('DXY')">DXY</button>
-  </div>
-</div>
+    <!-- Correlation Stats -->
+    <div class="corr-stats" id="corr-stats"></div>
 
-<!-- Current Correlation Stats -->
-<div class="corr-stats" id="corr-stats"></div>
+    <!-- Candlestick Chart -->
+    <section class="chart-section">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">BTC/USD</h2>
+                <span class="section-subtitle">Weekly Candlestick</span>
+            </div>
+        </div>
+        <div class="watermark">HERDVIBE</div>
+        <div id="candlestick-chart"></div>
+    </section>
 
-<!-- Charts -->
-<div class="chart-container">
-  <div class="candlestick-wrapper">
-    <div class="chart-label">BTC/USD <span>WEEKLY</span></div>
-    <div class="watermark">HERDVIBE</div>
-    <div id="candlestick-chart"></div>
-  </div>
+    <!-- Correlation Chart -->
+    <section class="chart-section">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title" id="corr-title">26-Week Rolling Correlation</h2>
+                <span class="section-subtitle">Pearson Correlation Coefficient with Bitcoin</span>
+            </div>
+        </div>
+        <div class="watermark" style="font-size:36px;">HERDVIBE</div>
+        <div class="corr-chart-box">
+            <canvas id="correlation-chart"></canvas>
+        </div>
+    </section>
 
-  <div class="correlation-wrapper">
-    <div class="chart-label" id="corr-title">26-Week Rolling Correlation with Bitcoin</div>
-    <div class="watermark" style="font-size:36px;">HERDVIBE</div>
-    <div class="corr-chart-box">
-      <canvas id="correlation-chart"></canvas>
-    </div>
-  </div>
-</div>
-
-<!-- Footer -->
-<div class="footer">
-  <div class="footer-text">herdvibe.com · Data: Yahoo Finance · Auto-updated daily</div>
-  <div class="share-buttons">
-    <a class="share-btn" id="share-x" href="#" target="_blank">𝕏 Share</a>
-    <a class="share-btn" id="share-kakao" href="#" target="_blank">💬 KakaoTalk</a>
-    <a class="share-btn" id="share-telegram" href="#" target="_blank">✈️ Telegram</a>
-  </div>
+    <!-- Footer -->
+    <footer class="footer">
+        데이터 출처: Yahoo Finance | 매일 자동 업데이트
+        <div class="share-buttons">
+            <a class="share-btn" id="share-x" href="#" target="_blank">𝕏 Share</a>
+            <a class="share-btn" id="share-kakao" href="#" target="_blank">💬 KakaoTalk</a>
+            <a class="share-btn" id="share-telegram" href="#" target="_blank">✈️ Telegram</a>
+        </div>
+    </footer>
 </div>
 
 <script>
@@ -478,11 +453,11 @@ let candlestickChart = null;
 let correlationChart = null;
 
 const ASSET_COLORS = {
-  SPY: { line: '#4488ff', bg: 'rgba(68,136,255,0.08)' },
-  QQQ: { line: '#aa66ff', bg: 'rgba(170,102,255,0.08)' },
-  IGV: { line: '#22cc88', bg: 'rgba(34,204,136,0.08)' },
-  GLD: { line: '#ffcc00', bg: 'rgba(255,204,0,0.08)' },
-  DXY: { line: '#ff4466', bg: 'rgba(255,68,102,0.08)' },
+  SPY: { line: '#4dabf7', bg: 'rgba(77,171,247,0.08)' },
+  QQQ: { line: '#b197fc', bg: 'rgba(177,151,252,0.08)' },
+  IGV: { line: '#00d4aa', bg: 'rgba(0,212,170,0.08)' },
+  GLD: { line: '#ffd43b', bg: 'rgba(255,212,59,0.08)' },
+  DXY: { line: '#ff4757', bg: 'rgba(255,71,87,0.08)' },
 };
 
 const ASSET_LABELS = {
@@ -503,7 +478,7 @@ async function loadData() {
   } catch (e) {
     console.error('Failed to load data.json:', e);
     document.getElementById('loading').innerHTML =
-      '<div class="loading-text" style="color:#ff4466;">Failed to load data. Check data.json</div>';
+      '<div style="color:#ff4757;font-size:0.85rem;">데이터 로드 실패. data.json을 확인하세요.</div>';
     return;
   }
 
@@ -524,7 +499,7 @@ async function loadData() {
 // ============================================================
 function initCandlestickChart() {
   const container = document.getElementById('candlestick-chart');
-  const width = container.parentElement.clientWidth;
+  const width = container.parentElement.clientWidth - 40;
   const height = Math.min(420, window.innerHeight * 0.38);
 
   candlestickChart = LightweightCharts.createChart(container, {
@@ -532,13 +507,13 @@ function initCandlestickChart() {
     height: height,
     layout: {
       background: { type: 'solid', color: 'transparent' },
-      textColor: '#555570',
+      textColor: '#555555',
       fontFamily: "'JetBrains Mono', monospace",
       fontSize: 11,
     },
     grid: {
-      vertLines: { color: 'rgba(42, 42, 58, 0.5)' },
-      horzLines: { color: 'rgba(42, 42, 58, 0.5)' },
+      vertLines: { color: 'rgba(255, 255, 255, 0.04)' },
+      horzLines: { color: 'rgba(255, 255, 255, 0.04)' },
     },
     crosshair: {
       mode: LightweightCharts.CrosshairMode.Normal,
@@ -546,11 +521,11 @@ function initCandlestickChart() {
       horzLine: { color: 'rgba(255,255,255,0.1)', width: 1, style: 3 },
     },
     rightPriceScale: {
-      borderColor: 'rgba(42, 42, 58, 0.5)',
+      borderColor: 'rgba(255, 255, 255, 0.06)',
       scaleMargins: { top: 0.1, bottom: 0.05 },
     },
     timeScale: {
-      borderColor: 'rgba(42, 42, 58, 0.5)',
+      borderColor: 'rgba(255, 255, 255, 0.06)',
       timeVisible: false,
       fixLeftEdge: true,
       fixRightEdge: true,
@@ -560,29 +535,23 @@ function initCandlestickChart() {
 
   const series = candlestickChart.addCandlestickSeries({
     upColor: '#00d4aa',
-    downColor: '#ff4466',
+    downColor: '#ff4757',
     borderUpColor: '#00d4aa',
-    borderDownColor: '#ff4466',
+    borderDownColor: '#ff4757',
     wickUpColor: '#00d4aa',
-    wickDownColor: '#ff4466',
+    wickDownColor: '#ff4757',
   });
 
   const candleData = DATA.candles
     .filter(c => c.o && c.h && c.l && c.c)
-    .map(c => ({
-      time: c.t,
-      open: c.o,
-      high: c.h,
-      low: c.l,
-      close: c.c,
-    }));
+    .map(c => ({ time: c.t, open: c.o, high: c.h, low: c.l, close: c.c }));
 
   series.setData(candleData);
   candlestickChart.timeScale().fitContent();
 
-  // Responsive
   const ro = new ResizeObserver(() => {
-    candlestickChart.applyOptions({ width: container.parentElement.clientWidth });
+    const w = container.parentElement.clientWidth - 40;
+    candlestickChart.applyOptions({ width: w });
   });
   ro.observe(container.parentElement);
 }
@@ -590,6 +559,26 @@ function initCandlestickChart() {
 // ============================================================
 // Correlation Chart (Chart.js)
 // ============================================================
+let syncCrosshairX = null;
+
+const crosshairSyncPlugin = {
+  id: 'crosshairSync',
+  afterDraw(chart) {
+    if (syncCrosshairX === null) return;
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(syncCrosshairX, chartArea.top);
+    ctx.lineTo(syncCrosshairX, chartArea.bottom);
+    ctx.stroke();
+    ctx.restore();
+  }
+};
+
 function initCorrelationChart() {
   const ctx = document.getElementById('correlation-chart').getContext('2d');
 
@@ -599,15 +588,14 @@ function initCorrelationChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false,
-      },
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(22, 22, 31, 0.95)',
-          borderColor: 'rgba(42, 42, 58, 1)',
+          backgroundColor: 'rgba(10, 10, 10, 0.95)',
+          titleColor: '#fff',
+          bodyColor: '#ccc',
+          borderColor: '#333',
           borderWidth: 1,
           titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
           bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
@@ -627,26 +615,26 @@ function initCorrelationChart() {
         x: {
           type: 'time',
           time: { unit: 'year', displayFormats: { year: 'yyyy' } },
-          grid: { color: 'rgba(42, 42, 58, 0.5)' },
+          grid: { color: 'rgba(255, 255, 255, 0.04)' },
           ticks: {
             font: { family: "'JetBrains Mono', monospace", size: 10 },
-            color: '#555570',
+            color: '#555555',
             maxTicksLimit: 12,
           },
-          border: { color: 'rgba(42, 42, 58, 0.5)' },
+          border: { color: 'rgba(255, 255, 255, 0.06)' },
         },
         y: {
           position: 'right',
           min: -1,
           max: 1,
-          grid: { color: 'rgba(42, 42, 58, 0.3)' },
+          grid: { color: 'rgba(255, 255, 255, 0.04)' },
           ticks: {
             font: { family: "'JetBrains Mono', monospace", size: 10 },
-            color: '#555570',
+            color: '#555555',
             stepSize: 0.25,
             callback: v => v.toFixed(2),
           },
-          border: { color: 'rgba(42, 42, 58, 0.5)' },
+          border: { color: 'rgba(255, 255, 255, 0.06)' },
         },
       },
       elements: {
@@ -655,7 +643,6 @@ function initCorrelationChart() {
       },
     },
     plugins: [
-      // Zero line
       {
         id: 'zeroLine',
         beforeDraw(chart) {
@@ -663,7 +650,7 @@ function initCorrelationChart() {
           if (!chartArea) return;
           const y0 = scales.y.getPixelForValue(0);
           ctx.save();
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
           ctx.lineWidth = 1.5;
           ctx.setLineDash([6, 4]);
           ctx.beginPath();
@@ -673,26 +660,20 @@ function initCorrelationChart() {
           ctx.restore();
         }
       },
-      // Extreme zones
       {
         id: 'extremeZones',
         beforeDraw(chart) {
           const { ctx, chartArea, scales } = chart;
           if (!chartArea) return;
           ctx.save();
-
-          // Strong positive zone (>0.75)
           const y75 = scales.y.getPixelForValue(0.75);
           const y1 = scales.y.getPixelForValue(1);
           ctx.fillStyle = 'rgba(0, 212, 170, 0.04)';
           ctx.fillRect(chartArea.left, y1, chartArea.width, y75 - y1);
-
-          // Strong negative zone (<-0.75)
           const yN75 = scales.y.getPixelForValue(-0.75);
           const yN1 = scales.y.getPixelForValue(-1);
-          ctx.fillStyle = 'rgba(255, 68, 102, 0.04)';
+          ctx.fillStyle = 'rgba(255, 71, 87, 0.04)';
           ctx.fillRect(chartArea.left, yN75, chartArea.width, yN1 - yN75);
-
           ctx.restore();
         }
       },
@@ -705,19 +686,15 @@ function initCorrelationChart() {
 
 function updateCorrelationData() {
   if (!DATA || !correlationChart) return;
-
   const corrData = DATA.correlations[String(currentPeriod)];
   if (!corrData) return;
 
   const datasets = [];
-
   for (const asset of ['SPY', 'QQQ', 'IGV', 'GLD', 'DXY']) {
     if (!activeAssets.has(asset)) continue;
-
     const points = corrData
       .filter(d => d[asset] !== null && d[asset] !== undefined)
       .map(d => ({ x: d.t, y: d[asset] }));
-
     datasets.push({
       label: `${asset} (${ASSET_LABELS[asset]})`,
       data: points,
@@ -731,14 +708,11 @@ function updateCorrelationData() {
 
   correlationChart.data.datasets = datasets;
   correlationChart.update('none');
-
-  // Update title
-  document.getElementById('corr-title').textContent =
-    `${currentPeriod}-Week Rolling Correlation with Bitcoin`;
+  document.getElementById('corr-title').textContent = `${currentPeriod}-Week Rolling Correlation`;
 }
 
 // ============================================================
-// Correlation Stats (current values)
+// Correlation Stats
 // ============================================================
 function updateCorrelationStats() {
   if (!DATA) return;
@@ -751,13 +725,10 @@ function updateCorrelationStats() {
 
   for (const asset of ['SPY', 'QQQ', 'IGV', 'GLD', 'DXY']) {
     if (!activeAssets.has(asset)) continue;
-
     const val = latest[asset];
     if (val === null || val === undefined) continue;
-
     const cls = val > 0.1 ? 'corr-positive' : val < -0.1 ? 'corr-negative' : 'corr-neutral';
     const sign = val >= 0 ? '+' : '';
-
     const item = document.createElement('div');
     item.className = 'corr-stat-item';
     item.innerHTML = `
@@ -800,75 +771,39 @@ function toggleAsset(asset) {
 function setupShareLinks() {
   const url = encodeURIComponent('https://herdvibe.com/84');
   const text = encodeURIComponent(`₿ Bitcoin Correlation Dashboard - 비트코인과 주요 자산 상관관계 분석\n\nBTC: $${Number(DATA.btcLatest).toLocaleString()}`);
-
-  document.getElementById('share-x').href =
-    `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-  document.getElementById('share-kakao').href =
-    `https://story.kakao.com/share?url=${url}`;
-  document.getElementById('share-telegram').href =
-    `https://t.me/share/url?url=${url}&text=${text}`;
+  document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+  document.getElementById('share-kakao').href = `https://story.kakao.com/share?url=${url}`;
+  document.getElementById('share-telegram').href = `https://t.me/share/url?url=${url}&text=${text}`;
 }
 
 // ============================================================
-// Sync: Time Range + Crosshair between charts
+// Sync: Time Range + Crosshair
 // ============================================================
-let syncCrosshairX = null; // pixel X for crosshair overlay
-
-// Chart.js plugin: draw synced crosshair vertical line
-const crosshairSyncPlugin = {
-  id: 'crosshairSync',
-  afterDraw(chart) {
-    if (syncCrosshairX === null) return;
-    const { ctx, chartArea } = chart;
-    if (!chartArea) return;
-
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 3]);
-    ctx.beginPath();
-    ctx.moveTo(syncCrosshairX, chartArea.top);
-    ctx.lineTo(syncCrosshairX, chartArea.bottom);
-    ctx.stroke();
-    ctx.restore();
-  }
-};
-
 function setupCrosshairSync() {
   if (!candlestickChart || !correlationChart) return;
 
-  // 1) Visible time range sync: TradingView → Chart.js
   candlestickChart.timeScale().subscribeVisibleTimeRangeChange((range) => {
     if (!range || !correlationChart) return;
-
-    // range.from / range.to are date strings like "2020-01-06"
     const from = range.from;
     const to = range.to;
     if (!from || !to) return;
-
     correlationChart.options.scales.x.min = from;
     correlationChart.options.scales.x.max = to;
     correlationChart.update('none');
   });
 
-  // 2) Crosshair sync: TradingView hover → Chart.js vertical line
   candlestickChart.subscribeCrosshairMove((param) => {
     if (!param.time || !correlationChart) {
       syncCrosshairX = null;
       correlationChart.update('none');
       return;
     }
-
-    // Convert TradingView time to date string
     const t = param.time;
     const dateStr = typeof t === 'string' ? t
       : `${t.year}-${String(t.month).padStart(2,'0')}-${String(t.day).padStart(2,'0')}`;
-
-    // Find pixel X on Chart.js for this date
     const scale = correlationChart.scales.x;
     if (!scale) return;
     const px = scale.getPixelForValue(new Date(dateStr).getTime());
-
     if (px >= correlationChart.chartArea.left && px <= correlationChart.chartArea.right) {
       syncCrosshairX = px;
     } else {
@@ -881,9 +816,7 @@ function setupCrosshairSync() {
 // ============================================================
 // Init
 // ============================================================
-loadData().then(() => {
-  setupCrosshairSync();
-});
+loadData().then(() => { setupCrosshairSync(); });
 </script>
 </body>
 </html>
