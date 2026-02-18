@@ -16,6 +16,8 @@
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<!-- Kakao SDK -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" integrity="sha384-DKYJZ8NLiK8MN4/C5P2vDkVBLkWgJJeCi06ioih4sFIzjIoFcsaZMzVIWKKPYrk" crossorigin="anonymous"></script>
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -291,17 +293,22 @@
         display: flex;
         gap: 8px;
         justify-content: center;
-        margin-top: 10px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
     }
 
     .share-btn {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.65rem;
-        padding: 6px 14px;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        background: var(--bg-secondary);
-        color: var(--text-secondary);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 400;
+        padding: 8px 16px;
+        border: 1px solid #333;
+        border-radius: 20px;
+        background: transparent;
+        color: #ccc;
         cursor: pointer;
         transition: all 0.2s ease;
         text-decoration: none;
@@ -310,7 +317,19 @@
     .share-btn:hover {
         background: var(--bg-tertiary);
         color: var(--text-primary);
-        border-color: #3a3a3a;
+        border-color: #555;
+    }
+
+    .share-btn svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+    }
+
+    .footer-info {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        color: var(--text-muted);
     }
 
     /* Loading */
@@ -433,11 +452,30 @@
 
     <!-- Footer -->
     <footer class="footer">
-        데이터 출처: Yahoo Finance | 매일 자동 업데이트
         <div class="share-buttons">
-            <a class="share-btn" id="share-x" href="#" target="_blank">𝕏 Share</a>
-            <a class="share-btn" id="share-kakao" href="#" target="_blank">💬 KakaoTalk</a>
-            <a class="share-btn" id="share-telegram" href="#" target="_blank">✈️ Telegram</a>
+            <a class="share-btn" id="share-x" href="#" target="_blank">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                트위터
+            </a>
+            <button class="share-btn" id="share-kakao" onclick="shareKakao()">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-5.523 0-10 3.582-10 8 0 2.868 1.893 5.382 4.736 6.806-.152.56-.874 3.226-.899 3.424 0 0-.019.154.073.213.092.06.2.027.2.027.264-.037 3.063-1.998 3.545-2.34.77.112 1.565.17 2.345.17 5.523 0 10-3.582 10-8s-4.477-8-10-8z"/></svg>
+                카카오톡
+            </button>
+            <a class="share-btn" id="share-telegram" href="#" target="_blank">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                텔레그램
+            </a>
+            <button class="share-btn" onclick="shareInstagram()">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+                인스타그램
+            </button>
+            <button class="share-btn" onclick="copyLink()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                링크복사
+            </button>
+        </div>
+        <div class="footer-info">
+            Last updated: <span id="footer-date">--</span> · Weekly Rolling Correlation
         </div>
     </footer>
 </div>
@@ -768,12 +806,84 @@ function toggleAsset(asset) {
 // ============================================================
 // Share
 // ============================================================
+const SHARE_URL = 'https://herdvibe.com/84';
+const SHARE_TITLE = '비트코인 자산 상관관계 대시보드';
+
 function setupShareLinks() {
-  const url = encodeURIComponent('https://herdvibe.com/84');
-  const text = encodeURIComponent(`₿ Bitcoin Correlation Dashboard - 비트코인과 주요 자산 상관관계 분석\n\nBTC: $${Number(DATA.btcLatest).toLocaleString()}`);
-  document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-  document.getElementById('share-kakao').href = `https://story.kakao.com/share?url=${url}`;
-  document.getElementById('share-telegram').href = `https://t.me/share/url?url=${url}&text=${text}`;
+  const text = encodeURIComponent(`₿ ${SHARE_TITLE}\n\nBTC: $${Number(DATA.btcLatest).toLocaleString()}\n\n${SHARE_URL}`);
+  const url = encodeURIComponent(SHARE_URL);
+
+  document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${text}`;
+  document.getElementById('share-telegram').href = `https://t.me/share/url?url=${url}&text=${encodeURIComponent(`₿ ${SHARE_TITLE}\nBTC: $${Number(DATA.btcLatest).toLocaleString()}`)}`;
+  document.getElementById('footer-date').textContent = DATA.lastUpdated;
+
+  // Kakao SDK init
+  if (window.Kakao && !Kakao.isInitialized()) {
+    Kakao.init('a43ed7b39fac35458f4f9df925a279b5');
+  }
+}
+
+function shareKakao() {
+  if (!window.Kakao || !Kakao.isInitialized()) {
+    alert('카카오 SDK 로딩 중입니다. 잠시 후 다시 시도해주세요.');
+    return;
+  }
+  Kakao.Share.sendDefault({
+    objectType: 'feed',
+    content: {
+      title: SHARE_TITLE,
+      description: `BTC: $${Number(DATA.btcLatest).toLocaleString()} · SPY/QQQ/IGV/GLD/DXY 상관관계 분석`,
+      imageUrl: 'https://herdvibe.com/og-image.png',
+      link: {
+        mobileWebUrl: SHARE_URL,
+        webUrl: SHARE_URL,
+      },
+    },
+    buttons: [
+      {
+        title: '대시보드 보기',
+        link: {
+          mobileWebUrl: SHARE_URL,
+          webUrl: SHARE_URL,
+        },
+      },
+    ],
+  });
+}
+
+function shareInstagram() {
+  // Instagram doesn't have a direct web share API — copy link + open Instagram
+  navigator.clipboard.writeText(SHARE_URL).then(() => {
+    alert('링크가 복사되었습니다. 인스타그램 스토리에 붙여넣기 해주세요!');
+    window.open('https://www.instagram.com/', '_blank');
+  }).catch(() => {
+    window.open('https://www.instagram.com/', '_blank');
+  });
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(SHARE_URL).then(() => {
+    // Show copied feedback
+    const btn = event.currentTarget;
+    const original = btn.innerHTML;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 복사완료`;
+    btn.style.borderColor = '#00d4aa';
+    btn.style.color = '#00d4aa';
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 2000);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = SHARE_URL;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('링크가 복사되었습니다!');
+  });
 }
 
 // ============================================================
