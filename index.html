@@ -414,10 +414,10 @@
         </div>
         <div class="asset-toggles">
             <button class="asset-btn active" data-asset="SPY" onclick="toggleAsset('SPY')">SPY</button>
-            <button class="asset-btn active" data-asset="QQQ" onclick="toggleAsset('QQQ')">QQQ</button>
-            <button class="asset-btn active" data-asset="IGV" onclick="toggleAsset('IGV')">IGV</button>
-            <button class="asset-btn active" data-asset="GLD" onclick="toggleAsset('GLD')">GLD</button>
-            <button class="asset-btn active" data-asset="DXY" onclick="toggleAsset('DXY')">DXY</button>
+            <button class="asset-btn" data-asset="QQQ" onclick="toggleAsset('QQQ')">QQQ</button>
+            <button class="asset-btn" data-asset="IGV" onclick="toggleAsset('IGV')">IGV</button>
+            <button class="asset-btn" data-asset="GLD" onclick="toggleAsset('GLD')">GLD</button>
+            <button class="asset-btn" data-asset="DXY" onclick="toggleAsset('DXY')">DXY</button>
         </div>
     </nav>
 
@@ -486,7 +486,7 @@
 // ============================================================
 let DATA = null;
 let currentPeriod = 26;
-let activeAssets = new Set(['SPY', 'QQQ', 'IGV', 'GLD', 'DXY']);
+let activeAssets = new Set(['SPY']);
 let candlestickChart = null;
 let correlationChart = null;
 
