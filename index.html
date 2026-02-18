@@ -694,7 +694,8 @@ function initCorrelationChart() {
 
           ctx.restore();
         }
-      }
+      },
+      crosshairSyncPlugin,
     ],
   });
 
@@ -808,16 +809,71 @@ function setupShareLinks() {
 }
 
 // ============================================================
-// Sync crosshair between charts
+// Sync: Time Range + Crosshair between charts
 // ============================================================
-function setupCrosshairSync() {
-  if (!candlestickChart) return;
+let syncCrosshairX = null; // pixel X for crosshair overlay
 
-  candlestickChart.subscribeCrosshairMove(param => {
-    if (!param.time || !correlationChart) return;
-    // Highlight corresponding point on correlation chart
-    const timeStr = param.time;
-    // Chart.js doesn't have direct crosshair sync, but tooltip mode 'index' handles it
+// Chart.js plugin: draw synced crosshair vertical line
+const crosshairSyncPlugin = {
+  id: 'crosshairSync',
+  afterDraw(chart) {
+    if (syncCrosshairX === null) return;
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(syncCrosshairX, chartArea.top);
+    ctx.lineTo(syncCrosshairX, chartArea.bottom);
+    ctx.stroke();
+    ctx.restore();
+  }
+};
+
+function setupCrosshairSync() {
+  if (!candlestickChart || !correlationChart) return;
+
+  // 1) Visible time range sync: TradingView → Chart.js
+  candlestickChart.timeScale().subscribeVisibleTimeRangeChange((range) => {
+    if (!range || !correlationChart) return;
+
+    // range.from / range.to are date strings like "2020-01-06"
+    const from = range.from;
+    const to = range.to;
+    if (!from || !to) return;
+
+    correlationChart.options.scales.x.min = from;
+    correlationChart.options.scales.x.max = to;
+    correlationChart.update('none');
+  });
+
+  // 2) Crosshair sync: TradingView hover → Chart.js vertical line
+  candlestickChart.subscribeCrosshairMove((param) => {
+    if (!param.time || !correlationChart) {
+      syncCrosshairX = null;
+      correlationChart.update('none');
+      return;
+    }
+
+    // Convert TradingView time to date string
+    const t = param.time;
+    const dateStr = typeof t === 'string' ? t
+      : `${t.year}-${String(t.month).padStart(2,'0')}-${String(t.day).padStart(2,'0')}`;
+
+    // Find pixel X on Chart.js for this date
+    const scale = correlationChart.scales.x;
+    if (!scale) return;
+    const px = scale.getPixelForValue(new Date(dateStr).getTime());
+
+    if (px >= correlationChart.chartArea.left && px <= correlationChart.chartArea.right) {
+      syncCrosshairX = px;
+    } else {
+      syncCrosshairX = null;
+    }
+    correlationChart.update('none');
   });
 }
 
