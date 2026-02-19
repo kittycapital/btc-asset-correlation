@@ -2,13 +2,12 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>Bitcoin Correlation Dashboard | Herdvibe</title>
 <meta name="description" content="Bitcoin weekly chart with rolling correlation against SPY, QQQ, IGV, GLD, DXY">
 <meta property="og:title" content="Bitcoin Correlation Dashboard">
 <meta property="og:description" content="비트코인과 주요 자산 간 상관관계 분석">
 <meta property="og:type" content="website">
-<script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" integrity="sha384-DKYJZ8NLiK8MN4/C5P2vDkVBLkWgJJeCi06ioih4sFIzjIoFcsaZMzVIWKKPYrk" crossorigin="anonymous"></script>
@@ -29,6 +28,8 @@ body{font-family:'Noto Sans KR',sans-serif;background-color:var(--bg-primary);co
 .header .btc-price{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--text-primary);margin-top:10px;-webkit-text-fill-color:initial}
 .header .btc-price .dollar{color:var(--text-muted);font-weight:400}
 .header .update-badge{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);margin-top:4px}
+.live-dot{display:inline-block;width:6px;height:6px;background:#22c55e;border-radius:50%;margin-left:4px;vertical-align:middle;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .controls{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
 .control-group{display:flex;align-items:center;gap:4px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:4px}
 .control-group label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);padding:0 8px;text-transform:uppercase;letter-spacing:0.5px}
@@ -56,10 +57,15 @@ body{font-family:'Noto Sans KR',sans-serif;background-color:var(--bg-primary);co
 .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
 .section-title{font-size:1.1rem;font-weight:600}
 .section-subtitle{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
-#candlestick-chart{width:100%}
+.btc-chart-wrapper{position:relative;height:380px}
+.btc-chart-wrapper canvas{width:100%!important;height:100%!important}
 .corr-chart-box{position:relative;width:100%;height:280px}
 #correlation-chart{width:100%;max-height:280px}
 .watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:700;color:rgba(255,255,255,0.015);pointer-events:none;z-index:1;white-space:nowrap;letter-spacing:4px}
+.tabs{display:flex;gap:4px;background:var(--bg-tertiary);border-radius:8px;padding:3px}
+.tab-btn{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+.tab-btn:hover{color:var(--text-secondary)}
+.tab-btn.active{background:var(--bg-secondary);color:var(--text-primary)}
 .footer{text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem}
 .share-buttons{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
 .share-btn{display:inline-flex;align-items:center;gap:6px;font-family:'Noto Sans KR',sans-serif;font-size:0.75rem;font-weight:400;padding:8px 16px;border:1px solid #333;border-radius:20px;background:transparent;color:#ccc;cursor:pointer;transition:all 0.2s ease;text-decoration:none}
@@ -82,6 +88,7 @@ body{font-family:'Noto Sans KR',sans-serif;background-color:var(--bg-primary);co
   .asset-btn{padding:6px 10px;font-size:0.65rem}
   .chart-section{padding:15px 12px;border-radius:10px;margin-bottom:15px}
   .section-title{font-size:1rem}
+  .btc-chart-wrapper{height:300px}
   .corr-chart-box{height:220px}
   #correlation-chart{max-height:220px}
   .corr-stats{gap:10px}
@@ -96,6 +103,7 @@ body{font-family:'Noto Sans KR',sans-serif;background-color:var(--bg-primary);co
   .control-btn{padding:5px 8px;font-size:0.6rem}
   .asset-btn{padding:5px 8px;font-size:0.6rem}
   .section-title{font-size:0.9rem}
+  .btc-chart-wrapper{height:260px}
 }
 </style>
 </head>
@@ -133,17 +141,26 @@ body{font-family:'Noto Sans KR',sans-serif;background-color:var(--bg-primary);co
 
     <div class="corr-stats" id="corr-stats"></div>
 
+    <!-- BTC Price Chart (Chart.js) -->
     <section class="chart-section">
         <div class="section-header">
             <div>
                 <h2 class="section-title">BTC/USD</h2>
-                <span class="section-subtitle">Weekly Candlestick</span>
+                <span class="section-subtitle" id="btc-chart-subtitle">Weekly Close · All Time</span>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn" data-btc-range="1y" onclick="setBtcRange('1y')">1Y</button>
+                <button class="tab-btn" data-btc-range="3y" onclick="setBtcRange('3y')">3Y</button>
+                <button class="tab-btn active" data-btc-range="all" onclick="setBtcRange('all')">ALL</button>
             </div>
         </div>
         <div class="watermark">HERDVIBE</div>
-        <div id="candlestick-chart"></div>
+        <div class="btc-chart-wrapper" id="btc-chart-wrapper">
+            <canvas id="btc-chart"></canvas>
+        </div>
     </section>
 
+    <!-- Correlation Chart -->
     <section class="chart-section">
         <div class="section-header">
             <div>
@@ -187,150 +204,179 @@ body{font-family:'Noto Sans KR',sans-serif;background-color:var(--bg-primary);co
 </div>
 
 <script>
-let DATA = null;
-let currentPeriod = 26;
-let activeAssets = new Set(['SPY']);
-let candlestickChart = null;
-let correlationChart = null;
+// ===== State =====
+var DATA = null;
+var currentPeriod = 26;
+var currentBtcRange = 'all';
+var activeAssets = new Set(['SPY']);
+var btcChart = null;
+var correlationChart = null;
 
-const ASSET_COLORS = {
+var ASSET_COLORS = {
   SPY: { line: '#4dabf7', bg: 'rgba(77,171,247,0.08)' },
   QQQ: { line: '#b197fc', bg: 'rgba(177,151,252,0.08)' },
   IGV: { line: '#00d4aa', bg: 'rgba(0,212,170,0.08)' },
   GLD: { line: '#ffd43b', bg: 'rgba(255,212,59,0.08)' },
   DXY: { line: '#ff4757', bg: 'rgba(255,71,87,0.08)' },
 };
-
-const ASSET_LABELS = {
+var ASSET_LABELS = {
   SPY: 'S&P 500', QQQ: 'NASDAQ 100', IGV: 'Software', GLD: 'Gold', DXY: 'US Dollar',
 };
 
-// === MODIFIED: Compact price formatter ===
-function formatBtcPrice(price) {
-  if (price >= 1000) return '$' + (price / 1000).toFixed(0) + 'k';
-  if (price >= 1) return '$' + price.toFixed(0);
-  return '$' + price.toFixed(2);
+function formatCurrency(v) {
+  if (v == null) return '--';
+  if (v >= 1000) return '$' + (v / 1000).toFixed(0) + 'k';
+  if (v >= 1) return '$' + v.toFixed(0);
+  return '$' + v.toFixed(2);
 }
 
+// ===== Load Data =====
 async function loadData() {
   try {
-    const resp = await fetch('data.json');
+    var resp = await fetch('data.json?v=' + Date.now());
     DATA = await resp.json();
   } catch (e) {
-    console.error('Failed to load data.json:', e);
     document.getElementById('loading').innerHTML =
-      '<div style="color:#ff4757;font-size:0.85rem;">데이터 로드 실패. data.json을 확인하세요.</div>';
+      '<div style="color:#ff4757;font-size:0.85rem;">데이터 로드 실패</div>';
     return;
   }
   document.getElementById('btc-price-value').textContent =
     Number(DATA.btcLatest).toLocaleString('en-US', { maximumFractionDigits: 0 });
   document.getElementById('last-updated').textContent = DATA.lastUpdated;
-  initCandlestickChart();
+  document.getElementById('footer-date').textContent = DATA.lastUpdated;
+
+  initBtcChart();
   initCorrelationChart();
   updateCorrelationStats();
   setupShareLinks();
-  setTimeout(() => document.getElementById('loading').classList.add('hidden'), 300);
+  connectBinance();
+  setTimeout(function() { document.getElementById('loading').classList.add('hidden'); }, 300);
 }
 
-// === MODIFIED: Candlestick Chart with compact price labels ===
-function initCandlestickChart() {
-  const container = document.getElementById('candlestick-chart');
-  const width = container.parentElement.clientWidth - 40;
-  const isMobile = window.innerWidth <= 768;
-  const height = isMobile
-    ? Math.min(300, window.innerHeight * 0.30)
-    : Math.min(420, window.innerHeight * 0.38);
-  const fontSize = isMobile ? 9 : 11;
-
-  candlestickChart = LightweightCharts.createChart(container, {
-    width: width,
-    height: height,
-    layout: {
-      background: { type: 'solid', color: 'transparent' },
-      textColor: '#555555',
-      fontFamily: "'JetBrains Mono', monospace",
-      fontSize: fontSize,
-    },
-    localization: {
-      priceFormatter: formatBtcPrice,
-    },
-    grid: {
-      vertLines: { color: 'rgba(255, 255, 255, 0.04)' },
-      horzLines: { color: 'rgba(255, 255, 255, 0.04)' },
-    },
-    crosshair: {
-      mode: LightweightCharts.CrosshairMode.Normal,
-      vertLine: { color: 'rgba(255,255,255,0.1)', width: 1, style: 3 },
-      horzLine: { color: 'rgba(255,255,255,0.1)', width: 1, style: 3, labelBackgroundColor: '#333' },
-    },
-    rightPriceScale: {
-      borderColor: 'rgba(255, 255, 255, 0.06)',
-      scaleMargins: { top: 0.1, bottom: 0.05 },
-      entireTextOnly: true,
-    },
-    timeScale: {
-      borderColor: 'rgba(255, 255, 255, 0.06)',
-      timeVisible: false,
-      fixLeftEdge: true,
-      fixRightEdge: true,
-    },
-    handleScroll: { vertTouchDrag: false },
-  });
-
-  const series = candlestickChart.addCandlestickSeries({
-    upColor: '#00d4aa',
-    downColor: '#ff4757',
-    borderUpColor: '#00d4aa',
-    borderDownColor: '#ff4757',
-    wickUpColor: '#00d4aa',
-    wickDownColor: '#ff4757',
-    priceFormat: {
-      type: 'custom',
-      formatter: formatBtcPrice,
-      minMove: 1,
-    },
-  });
-
-  const candleData = DATA.candles
-    .filter(c => c.o && c.h && c.l && c.c)
-    .map(c => ({ time: c.t, open: c.o, high: c.h, low: c.l, close: c.c }));
-
-  series.setData(candleData);
-  candlestickChart.timeScale().fitContent();
-
-  const ro = new ResizeObserver(() => {
-    const w = container.parentElement.clientWidth - 40;
-    const mobile = window.innerWidth <= 768;
-    const h = mobile
-      ? Math.min(300, window.innerHeight * 0.30)
-      : Math.min(420, window.innerHeight * 0.38);
-    candlestickChart.applyOptions({ width: w, height: h });
-  });
-  ro.observe(container.parentElement);
+// ===== BTC Price Chart (Chart.js) =====
+function sliceBtcData(range) {
+  var candles = DATA.candles.filter(function(c) { return c.c != null; });
+  if (range === 'all') return candles;
+  var years = range === '1y' ? 1 : 3;
+  var lastDate = new Date(candles[candles.length - 1].t);
+  var cutoff = new Date(lastDate);
+  cutoff.setFullYear(cutoff.getFullYear() - years);
+  var cutoffStr = cutoff.toISOString().split('T')[0];
+  return candles.filter(function(c) { return c.t >= cutoffStr; });
 }
 
-// Correlation Chart
-let syncCrosshairX = null;
-const crosshairSyncPlugin = {
-  id: 'crosshairSync',
-  afterDraw(chart) {
-    if (syncCrosshairX === null) return;
-    const { ctx, chartArea } = chart;
-    if (!chartArea) return;
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 3]);
-    ctx.beginPath();
-    ctx.moveTo(syncCrosshairX, chartArea.top);
-    ctx.lineTo(syncCrosshairX, chartArea.bottom);
-    ctx.stroke();
-    ctx.restore();
-  }
-};
+function initBtcChart() {
+  var candles = sliceBtcData(currentBtcRange);
+  var dates = candles.map(function(c) { return new Date(c.t + 'T00:00:00'); });
+  var prices = candles.map(function(c) { return c.c; });
 
+  var timeUnit = 'year';
+  var maxTicks = 14;
+  if (currentBtcRange === '1y') { timeUnit = 'month'; maxTicks = 12; }
+  else if (currentBtcRange === '3y') { timeUnit = 'quarter'; maxTicks = 10; }
+
+  var xMax = new Date(dates[dates.length - 1]);
+  xMax.setDate(xMax.getDate() + 14);
+
+  var wrapper = document.getElementById('btc-chart-wrapper');
+  wrapper.innerHTML = '<canvas id="btc-chart"></canvas>';
+  var ctx = document.getElementById('btc-chart').getContext('2d');
+
+  btcChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: 'BTC Price',
+        data: prices,
+        borderColor: '#a1a1aa',
+        backgroundColor: function(context) {
+          var c = context.chart;
+          if (!c.chartArea) return 'rgba(161,161,170,0.05)';
+          var g = c.ctx.createLinearGradient(0, c.chartArea.top, 0, c.chartArea.bottom);
+          g.addColorStop(0, 'rgba(161,161,170,0.12)');
+          g.addColorStop(1, 'rgba(161,161,170,0.01)');
+          return g;
+        },
+        fill: true,
+        borderWidth: 2,
+        tension: 0.15,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointHoverBackgroundColor: '#a1a1aa',
+        spanGaps: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 400 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a1a',
+          borderColor: '#333',
+          borderWidth: 1,
+          titleColor: '#e4e4e7',
+          bodyColor: '#a1a1aa',
+          padding: 12,
+          titleFont: { family: "'JetBrains Mono', monospace" },
+          bodyFont: { family: "'JetBrains Mono', monospace" },
+          callbacks: {
+            title: function(ctx) {
+              var d = new Date(ctx[0].parsed.x);
+              return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            },
+            label: function(ctx) {
+              return 'BTC: $' + Number(ctx.raw).toLocaleString('en-US', { maximumFractionDigits: 0 });
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'time',
+          min: dates[0],
+          max: xMax,
+          time: { unit: timeUnit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: {
+            color: '#555',
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            maxTicksLimit: maxTicks
+          },
+          border: { color: 'rgba(255,255,255,0.06)' }
+        },
+        y: {
+          position: 'right',
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: {
+            color: '#555',
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            callback: function(v) { return formatCurrency(v); }
+          },
+          border: { color: 'rgba(255,255,255,0.06)' }
+        }
+      }
+    }
+  });
+}
+
+function setBtcRange(range) {
+  currentBtcRange = range;
+  document.querySelectorAll('[data-btc-range]').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-btc-range') === range);
+  });
+  var labels = { '1y': '1 Year', '3y': '3 Year', 'all': 'All Time' };
+  document.getElementById('btc-chart-subtitle').textContent = 'Weekly Close · ' + labels[range];
+  if (btcChart) { btcChart.destroy(); btcChart = null; }
+  initBtcChart();
+}
+
+// ===== Correlation Chart =====
 function initCorrelationChart() {
-  const ctx = document.getElementById('correlation-chart').getContext('2d');
+  var ctx = document.getElementById('correlation-chart').getContext('2d');
   correlationChart = new Chart(ctx, {
     type: 'line',
     data: { datasets: [] },
@@ -341,7 +387,7 @@ function initCorrelationChart() {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(10, 10, 10, 0.95)',
+          backgroundColor: 'rgba(10,10,10,0.95)',
           titleColor: '#fff', bodyColor: '#ccc',
           borderColor: '#333', borderWidth: 1,
           titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
@@ -349,100 +395,94 @@ function initCorrelationChart() {
           padding: 12, cornerRadius: 8,
           callbacks: {
             label: function(ctx) {
-              const val = ctx.parsed.y;
-              if (val === null || val === undefined) return null;
-              const sign = val >= 0 ? '+' : '';
+              var val = ctx.parsed.y;
+              if (val == null) return null;
+              var sign = val >= 0 ? '+' : '';
               return '  ' + ctx.dataset.label + ': ' + sign + val.toFixed(3);
             }
           }
-        },
+        }
       },
       scales: {
         x: {
           type: 'time',
           time: { unit: 'year', displayFormats: { year: 'yyyy' } },
-          grid: { color: 'rgba(255, 255, 255, 0.04)' },
-          ticks: {
-            font: { family: "'JetBrains Mono', monospace", size: 10 },
-            color: '#555555', maxTicksLimit: 12,
-          },
-          border: { color: 'rgba(255, 255, 255, 0.06)' },
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 10 }, color: '#555', maxTicksLimit: 12 },
+          border: { color: 'rgba(255,255,255,0.06)' }
         },
         y: {
           position: 'right', min: -1, max: 1,
-          grid: { color: 'rgba(255, 255, 255, 0.04)' },
+          grid: { color: 'rgba(255,255,255,0.04)' },
           ticks: {
             font: { family: "'JetBrains Mono', monospace", size: 10 },
-            color: '#555555', stepSize: 0.25,
-            callback: v => v.toFixed(2),
+            color: '#555', stepSize: 0.25,
+            callback: function(v) { return v.toFixed(2); }
           },
-          border: { color: 'rgba(255, 255, 255, 0.06)' },
-        },
+          border: { color: 'rgba(255,255,255,0.06)' }
+        }
       },
       elements: {
         point: { radius: 0, hoverRadius: 4 },
-        line: { borderWidth: 2 },
-      },
+        line: { borderWidth: 2 }
+      }
     },
     plugins: [
       {
         id: 'zeroLine',
-        beforeDraw(chart) {
-          const { ctx, chartArea, scales } = chart;
-          if (!chartArea) return;
-          const y0 = scales.y.getPixelForValue(0);
+        beforeDraw: function(chart) {
+          var ctx = chart.ctx, area = chart.chartArea, scales = chart.scales;
+          if (!area) return;
+          var y0 = scales.y.getPixelForValue(0);
           ctx.save();
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+          ctx.strokeStyle = 'rgba(255,255,255,0.12)';
           ctx.lineWidth = 1.5;
           ctx.setLineDash([6, 4]);
           ctx.beginPath();
-          ctx.moveTo(chartArea.left, y0);
-          ctx.lineTo(chartArea.right, y0);
+          ctx.moveTo(area.left, y0);
+          ctx.lineTo(area.right, y0);
           ctx.stroke();
           ctx.restore();
         }
       },
       {
         id: 'extremeZones',
-        beforeDraw(chart) {
-          const { ctx, chartArea, scales } = chart;
-          if (!chartArea) return;
+        beforeDraw: function(chart) {
+          var ctx = chart.ctx, area = chart.chartArea, scales = chart.scales;
+          if (!area) return;
           ctx.save();
-          const y75 = scales.y.getPixelForValue(0.75);
-          const y1 = scales.y.getPixelForValue(1);
-          ctx.fillStyle = 'rgba(0, 212, 170, 0.04)';
-          ctx.fillRect(chartArea.left, y1, chartArea.width, y75 - y1);
-          const yN75 = scales.y.getPixelForValue(-0.75);
-          const yN1 = scales.y.getPixelForValue(-1);
-          ctx.fillStyle = 'rgba(255, 71, 87, 0.04)';
-          ctx.fillRect(chartArea.left, yN75, chartArea.width, yN1 - yN75);
+          ctx.fillStyle = 'rgba(0,212,170,0.04)';
+          ctx.fillRect(area.left, scales.y.getPixelForValue(1), area.width,
+            scales.y.getPixelForValue(0.75) - scales.y.getPixelForValue(1));
+          ctx.fillStyle = 'rgba(255,71,87,0.04)';
+          ctx.fillRect(area.left, scales.y.getPixelForValue(-0.75), area.width,
+            scales.y.getPixelForValue(-1) - scales.y.getPixelForValue(-0.75));
           ctx.restore();
         }
-      },
-      crosshairSyncPlugin,
-    ],
+      }
+    ]
   });
   updateCorrelationData();
 }
 
 function updateCorrelationData() {
   if (!DATA || !correlationChart) return;
-  const corrData = DATA.correlations[String(currentPeriod)];
+  var corrData = DATA.correlations[String(currentPeriod)];
   if (!corrData) return;
-  const datasets = [];
-  for (const asset of ['SPY', 'QQQ', 'IGV', 'GLD', 'DXY']) {
-    if (!activeAssets.has(asset)) continue;
-    const points = corrData
-      .filter(d => d[asset] !== null && d[asset] !== undefined)
-      .map(d => ({ x: d.t, y: d[asset] }));
+  var datasets = [];
+  ['SPY','QQQ','IGV','GLD','DXY'].forEach(function(asset) {
+    if (!activeAssets.has(asset)) return;
+    var points = corrData
+      .filter(function(d) { return d[asset] != null; })
+      .map(function(d) { return { x: d.t, y: d[asset] }; });
     datasets.push({
       label: asset + ' (' + ASSET_LABELS[asset] + ')',
       data: points,
       borderColor: ASSET_COLORS[asset].line,
       backgroundColor: ASSET_COLORS[asset].bg,
-      fill: false, tension: 0.3, borderWidth: 2,
+      fill: false, tension: 0.3, borderWidth: 2
     });
-  }
+  });
   correlationChart.data.datasets = datasets;
   correlationChart.update('none');
   document.getElementById('corr-title').textContent = currentPeriod + '주 롤링 상관관계';
@@ -450,29 +490,30 @@ function updateCorrelationData() {
 
 function updateCorrelationStats() {
   if (!DATA) return;
-  const corrData = DATA.correlations[String(currentPeriod)];
+  var corrData = DATA.correlations[String(currentPeriod)];
   if (!corrData) return;
-  const latest = corrData[corrData.length - 1];
-  const container = document.getElementById('corr-stats');
+  var latest = corrData[corrData.length - 1];
+  var container = document.getElementById('corr-stats');
   container.innerHTML = '';
-  for (const asset of ['SPY', 'QQQ', 'IGV', 'GLD', 'DXY']) {
-    if (!activeAssets.has(asset)) continue;
-    const val = latest[asset];
-    if (val === null || val === undefined) continue;
-    const cls = val > 0.1 ? 'corr-positive' : val < -0.1 ? 'corr-negative' : 'corr-neutral';
-    const sign = val >= 0 ? '+' : '';
-    const item = document.createElement('div');
+  ['SPY','QQQ','IGV','GLD','DXY'].forEach(function(asset) {
+    if (!activeAssets.has(asset)) return;
+    var val = latest[asset];
+    if (val == null) return;
+    var cls = val > 0.1 ? 'corr-positive' : val < -0.1 ? 'corr-negative' : 'corr-neutral';
+    var sign = val >= 0 ? '+' : '';
+    var item = document.createElement('div');
     item.className = 'corr-stat-item';
     item.innerHTML = '<div class="corr-stat-dot" style="background:' + ASSET_COLORS[asset].line + '"></div>' +
       '<span class="corr-stat-name">' + asset + '</span>' +
       '<span class="corr-stat-value ' + cls + '">' + sign + val.toFixed(3) + '</span>';
     container.appendChild(item);
-  }
+  });
 }
 
+// ===== Controls =====
 function setPeriod(p) {
   currentPeriod = p;
-  document.querySelectorAll('[data-period]').forEach(btn => {
+  document.querySelectorAll('[data-period]').forEach(function(btn) {
     btn.classList.toggle('active', parseInt(btn.dataset.period) === p);
   });
   updateCorrelationData();
@@ -480,112 +521,79 @@ function setPeriod(p) {
 }
 
 function toggleAsset(asset) {
-  const btn = document.querySelector('[data-asset="' + asset + '"]');
-  if (activeAssets.has(asset)) {
-    activeAssets.delete(asset);
-    btn.classList.remove('active');
-  } else {
-    activeAssets.add(asset);
-    btn.classList.add('active');
-  }
+  var btn = document.querySelector('[data-asset="' + asset + '"]');
+  if (activeAssets.has(asset)) { activeAssets.delete(asset); btn.classList.remove('active'); }
+  else { activeAssets.add(asset); btn.classList.add('active'); }
   updateCorrelationData();
   updateCorrelationStats();
 }
 
-// Share
-const SHARE_URL = 'https://herdvibe.com/84';
-const SHARE_TITLE = '비트코인 자산 상관관계 대시보드';
+// ===== Binance WebSocket =====
+var _ws = null, _wsRetry = 0;
+function connectBinance() {
+  try {
+    _ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+    _ws.onopen = function() { _wsRetry = 0; };
+    _ws.onmessage = function(e) {
+      try {
+        var d = JSON.parse(e.data);
+        var price = parseFloat(d.p);
+        document.getElementById('btc-price-value').innerHTML =
+          Number(price).toLocaleString('en-US', { maximumFractionDigits: 0 }) +
+          '<span class="live-dot"></span>';
+      } catch(ex) {}
+    };
+    _ws.onclose = function() {
+      if (_wsRetry < 10) setTimeout(connectBinance, Math.min(3000 * Math.pow(1.5, _wsRetry++), 30000));
+    };
+    _ws.onerror = function() { _ws.close(); };
+  } catch(e) {}
+}
+
+// ===== Share =====
+var SHARE_URL = 'https://herdvibe.com/84';
+var SHARE_TITLE = '비트코인 자산 상관관계 대시보드';
 
 function setupShareLinks() {
-  const text = encodeURIComponent('\u20bf ' + SHARE_TITLE + '\n\nBTC: $' + Number(DATA.btcLatest).toLocaleString() + '\n\n' + SHARE_URL);
-  const url = encodeURIComponent(SHARE_URL);
+  var text = encodeURIComponent('\u20bf ' + SHARE_TITLE + '\n\nBTC: $' + Number(DATA.btcLatest).toLocaleString() + '\n\n' + SHARE_URL);
+  var url = encodeURIComponent(SHARE_URL);
   document.getElementById('share-x').href = 'https://twitter.com/intent/tweet?text=' + text;
   document.getElementById('share-telegram').href = 'https://t.me/share/url?url=' + url + '&text=' + encodeURIComponent('\u20bf ' + SHARE_TITLE + '\nBTC: $' + Number(DATA.btcLatest).toLocaleString());
-  document.getElementById('footer-date').textContent = DATA.lastUpdated;
-  if (window.Kakao && !Kakao.isInitialized()) {
-    Kakao.init('a43ed7b39fac35458f4f9df925a279b5');
-  }
+  if (window.Kakao && !Kakao.isInitialized()) Kakao.init('a43ed7b39fac35458f4f9df925a279b5');
 }
 
 function shareKakao() {
-  if (!window.Kakao || !Kakao.isInitialized()) {
-    alert('카카오 SDK 로딩 중입니다. 잠시 후 다시 시도해주세요.');
-    return;
-  }
+  if (!window.Kakao || !Kakao.isInitialized()) return;
   Kakao.Share.sendDefault({
     objectType: 'feed',
     content: {
       title: SHARE_TITLE,
-      description: 'BTC: $' + Number(DATA.btcLatest).toLocaleString() + ' \u00b7 SPY/QQQ/IGV/GLD/DXY 상관관계 분석',
+      description: 'BTC: $' + Number(DATA.btcLatest).toLocaleString() + ' \u00b7 SPY/QQQ/IGV/GLD/DXY',
       imageUrl: 'https://herdvibe.com/og-image.png',
-      link: { mobileWebUrl: SHARE_URL, webUrl: SHARE_URL },
+      link: { mobileWebUrl: SHARE_URL, webUrl: SHARE_URL }
     },
-    buttons: [{ title: '대시보드 보기', link: { mobileWebUrl: SHARE_URL, webUrl: SHARE_URL } }],
+    buttons: [{ title: '대시보드 보기', link: { mobileWebUrl: SHARE_URL, webUrl: SHARE_URL } }]
   });
 }
 
 function shareInstagram() {
-  navigator.clipboard.writeText(SHARE_URL).then(() => {
-    alert('링크가 복사되었습니다. 인스타그램 스토리에 붙여넣기 해주세요!');
-    window.open('https://www.instagram.com/', '_blank');
-  }).catch(() => {
-    window.open('https://www.instagram.com/', '_blank');
-  });
+  navigator.clipboard.writeText(SHARE_URL).then(function() {
+    alert('링크가 복사되었습니다. 인스타그램에 붙여넣기 해주세요!');
+  }).catch(function() {});
 }
 
 function copyLink() {
-  navigator.clipboard.writeText(SHARE_URL).then(() => {
-    const btn = event.currentTarget;
-    const original = btn.innerHTML;
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 복사완료';
-    btn.style.borderColor = '#00d4aa';
-    btn.style.color = '#00d4aa';
-    setTimeout(() => { btn.innerHTML = original; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
-  }).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = SHARE_URL;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    alert('링크가 복사되었습니다!');
-  });
+  navigator.clipboard.writeText(SHARE_URL).then(function() {
+    var btn = event.currentTarget;
+    var orig = btn.innerHTML;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> 복사완료';
+    btn.style.borderColor = '#00d4aa'; btn.style.color = '#00d4aa';
+    setTimeout(function() { btn.innerHTML = orig; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
+  }).catch(function() { alert('링크가 복사되었습니다!'); });
 }
 
-// Sync
-function setupCrosshairSync() {
-  if (!candlestickChart || !correlationChart) return;
-  candlestickChart.timeScale().subscribeVisibleTimeRangeChange((range) => {
-    if (!range || !correlationChart) return;
-    const from = range.from;
-    const to = range.to;
-    if (!from || !to) return;
-    correlationChart.options.scales.x.min = from;
-    correlationChart.options.scales.x.max = to;
-    correlationChart.update('none');
-  });
-  candlestickChart.subscribeCrosshairMove((param) => {
-    if (!param.time || !correlationChart) {
-      syncCrosshairX = null;
-      correlationChart.update('none');
-      return;
-    }
-    const t = param.time;
-    const dateStr = typeof t === 'string' ? t
-      : t.year + '-' + String(t.month).padStart(2,'0') + '-' + String(t.day).padStart(2,'0');
-    const scale = correlationChart.scales.x;
-    if (!scale) return;
-    const px = scale.getPixelForValue(new Date(dateStr).getTime());
-    if (px >= correlationChart.chartArea.left && px <= correlationChart.chartArea.right) {
-      syncCrosshairX = px;
-    } else {
-      syncCrosshairX = null;
-    }
-    correlationChart.update('none');
-  });
-}
-
-loadData().then(() => { setupCrosshairSync(); });
+// ===== Init =====
+loadData();
 </script>
 </body>
 </html>
