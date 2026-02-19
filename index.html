@@ -5,386 +5,98 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bitcoin Correlation Dashboard | Herdvibe</title>
 <meta name="description" content="Bitcoin weekly chart with rolling correlation against SPY, QQQ, IGV, GLD, DXY">
-
-<!-- Open Graph -->
 <meta property="og:title" content="Bitcoin Correlation Dashboard">
 <meta property="og:description" content="비트코인과 주요 자산 간 상관관계 분석">
 <meta property="og:type" content="website">
-
-<!-- TradingView Lightweight Charts -->
 <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-<!-- Kakao SDK -->
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" integrity="sha384-DKYJZ8NLiK8MN4/C5P2vDkVBLkWgJJeCi06ioih4sFIzjIoFcsaZMzVIWKKPYrk" crossorigin="anonymous"></script>
-
-<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+*{margin:0;padding:0;box-sizing:border-box}
+::-webkit-scrollbar{display:none}
+*{-ms-overflow-style:none;scrollbar-width:none}
+:root{--bg-primary:#0a0a0a;--bg-secondary:#111111;--bg-tertiary:#1a1a1a;--text-primary:#ffffff;--text-secondary:#888888;--text-muted:#555555;--accent-green:#00d4aa;--accent-red:#ff4757;--accent-yellow:#ffd43b;--accent-blue:#4dabf7;--border-color:#2a2a2a;--color-spy:#4dabf7;--color-qqq:#b197fc;--color-igv:#00d4aa;--color-gld:#ffd43b;--color-dxy:#ff4757}
+html,body{overflow-x:hidden}
+body{font-family:'Noto Sans KR',sans-serif;background-color:var(--bg-primary);color:var(--text-primary);min-height:100vh;line-height:1.6}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+.header{text-align:center;padding:30px 0 20px;border-bottom:1px solid var(--border-color);margin-bottom:20px}
+.header h1{font-size:1.8rem;font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;background:linear-gradient(135deg,#fff 0%,#888 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header p{color:var(--text-secondary);font-size:0.85rem}
+.header .btc-price{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--text-primary);margin-top:10px;-webkit-text-fill-color:initial}
+.header .btc-price .dollar{color:var(--text-muted);font-weight:400}
+.header .update-badge{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);margin-top:4px}
+.controls{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.control-group{display:flex;align-items:center;gap:4px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:4px}
+.control-group label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);padding:0 8px;text-transform:uppercase;letter-spacing:0.5px}
+.control-btn{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:500;padding:8px 14px;border-radius:8px;border:none;background:transparent;color:var(--text-secondary);cursor:pointer;transition:all 0.2s ease}
+.control-btn:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+.control-btn.active{background:var(--bg-tertiary);border:1px solid var(--accent-yellow);color:var(--text-primary);box-shadow:0 0 12px rgba(255,212,59,0.1)}
+.asset-toggles{display:flex;gap:6px;flex-wrap:wrap}
+.asset-btn{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:500;padding:8px 16px;border:1px solid var(--border-color);border-radius:10px;cursor:pointer;background:var(--bg-secondary);color:var(--text-secondary);transition:all 0.2s ease}
+.asset-btn:hover{background:var(--bg-tertiary);border-color:#3a3a3a}
+.asset-btn.active{color:#fff}
+.asset-btn[data-asset="SPY"].active{background:var(--bg-tertiary);border-color:var(--color-spy);box-shadow:0 0 12px rgba(77,171,247,0.15)}
+.asset-btn[data-asset="QQQ"].active{background:var(--bg-tertiary);border-color:var(--color-qqq);box-shadow:0 0 12px rgba(177,151,252,0.15)}
+.asset-btn[data-asset="IGV"].active{background:var(--bg-tertiary);border-color:var(--color-igv);box-shadow:0 0 12px rgba(0,212,170,0.15)}
+.asset-btn[data-asset="GLD"].active{background:var(--bg-tertiary);border-color:var(--color-gld);box-shadow:0 0 12px rgba(255,212,59,0.15);color:var(--color-gld)}
+.asset-btn[data-asset="DXY"].active{background:var(--bg-tertiary);border-color:var(--color-dxy);box-shadow:0 0 12px rgba(255,71,87,0.15)}
+.corr-stats{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+.corr-stat-item{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:0.75rem}
+.corr-stat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.corr-stat-name{color:var(--text-secondary)}
+.corr-stat-value{font-weight:600}
+.corr-positive{color:var(--accent-green)}
+.corr-negative{color:var(--accent-red)}
+.corr-neutral{color:var(--text-secondary)}
+.chart-section{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:20px;margin-bottom:20px;position:relative;overflow:hidden}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.section-title{font-size:1.1rem;font-weight:600}
+.section-subtitle{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+#candlestick-chart{width:100%}
+.corr-chart-box{position:relative;width:100%;height:280px}
+#correlation-chart{width:100%;max-height:280px}
+.watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:700;color:rgba(255,255,255,0.015);pointer-events:none;z-index:1;white-space:nowrap;letter-spacing:4px}
+.footer{text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem}
+.share-buttons{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+.share-btn{display:inline-flex;align-items:center;gap:6px;font-family:'Noto Sans KR',sans-serif;font-size:0.75rem;font-weight:400;padding:8px 16px;border:1px solid #333;border-radius:20px;background:transparent;color:#ccc;cursor:pointer;transition:all 0.2s ease;text-decoration:none}
+.share-btn:hover{background:var(--bg-tertiary);color:var(--text-primary);border-color:#555}
+.share-btn svg{width:14px;height:14px;flex-shrink:0}
+.footer-info{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted)}
+.loading-overlay{position:fixed;inset:0;background:var(--bg-primary);display:flex;align-items:center;justify-content:center;z-index:1000;transition:opacity 0.4s}
+.loading-overlay.hidden{opacity:0;pointer-events:none}
+.spinner{width:30px;height:30px;border:3px solid var(--border-color);border-top-color:var(--accent-yellow);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-    ::-webkit-scrollbar { display: none; }
-    * {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    :root {
-        --bg-primary: #0a0a0a;
-        --bg-secondary: #111111;
-        --bg-tertiary: #1a1a1a;
-        --text-primary: #ffffff;
-        --text-secondary: #888888;
-        --text-muted: #555555;
-        --accent-green: #00d4aa;
-        --accent-red: #ff4757;
-        --accent-yellow: #ffd43b;
-        --accent-blue: #4dabf7;
-        --border-color: #2a2a2a;
-        --color-spy: #4dabf7;
-        --color-qqq: #b197fc;
-        --color-igv: #00d4aa;
-        --color-gld: #ffd43b;
-        --color-dxy: #ff4757;
-    }
-
-    html, body { overflow-x: hidden; }
-
-    body {
-        font-family: 'Noto Sans KR', sans-serif;
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
-        min-height: 100vh;
-        line-height: 1.6;
-    }
-
-    .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    /* Header */
-    .header {
-        text-align: center;
-        padding: 30px 0 20px;
-        border-bottom: 1px solid var(--border-color);
-        margin-bottom: 20px;
-    }
-
-    .header h1 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-        margin-bottom: 6px;
-        background: linear-gradient(135deg, #fff 0%, #888 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .header p {
-        color: var(--text-secondary);
-        font-size: 0.85rem;
-    }
-
-    .header .btc-price {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin-top: 10px;
-        -webkit-text-fill-color: initial;
-    }
-
-    .header .btc-price .dollar {
-        color: var(--text-muted);
-        font-weight: 400;
-    }
-
-    .header .update-badge {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.7rem;
-        color: var(--text-muted);
-        margin-top: 4px;
-    }
-
-    /* Controls */
-    .controls {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-    }
-
-    .control-group {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        padding: 4px;
-    }
-
-    .control-group label {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.65rem;
-        color: var(--text-muted);
-        padding: 0 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .control-btn {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.75rem;
-        font-weight: 500;
-        padding: 8px 14px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        background: transparent;
-        color: var(--text-secondary);
-        transition: all 0.2s ease;
-    }
-
-    .control-btn:hover {
-        background: var(--bg-tertiary);
-        color: var(--text-primary);
-    }
-
-    .control-btn.active {
-        background: var(--bg-tertiary);
-        border: 1px solid var(--accent-yellow);
-        color: var(--text-primary);
-        box-shadow: 0 0 12px rgba(255, 212, 59, 0.1);
-    }
-
-    .asset-toggles {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-    }
-
-    .asset-btn {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.75rem;
-        font-weight: 500;
-        padding: 8px 16px;
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        cursor: pointer;
-        background: var(--bg-secondary);
-        color: var(--text-secondary);
-        transition: all 0.2s ease;
-    }
-
-    .asset-btn:hover { background: var(--bg-tertiary); border-color: #3a3a3a; }
-    .asset-btn.active { color: #fff; }
-    .asset-btn[data-asset="SPY"].active { background: var(--bg-tertiary); border-color: var(--color-spy); box-shadow: 0 0 12px rgba(77,171,247,0.15); }
-    .asset-btn[data-asset="QQQ"].active { background: var(--bg-tertiary); border-color: var(--color-qqq); box-shadow: 0 0 12px rgba(177,151,252,0.15); }
-    .asset-btn[data-asset="IGV"].active { background: var(--bg-tertiary); border-color: var(--color-igv); box-shadow: 0 0 12px rgba(0,212,170,0.15); }
-    .asset-btn[data-asset="GLD"].active { background: var(--bg-tertiary); border-color: var(--color-gld); box-shadow: 0 0 12px rgba(255,212,59,0.15); color: var(--color-gld); }
-    .asset-btn[data-asset="DXY"].active { background: var(--bg-tertiary); border-color: var(--color-dxy); box-shadow: 0 0 12px rgba(255,71,87,0.15); }
-
-    /* Correlation Stats */
-    .corr-stats {
-        display: flex;
-        gap: 16px;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-
-    .corr-stat-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.75rem;
-    }
-
-    .corr-stat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .corr-stat-name { color: var(--text-secondary); }
-    .corr-stat-value { font-weight: 600; }
-    .corr-positive { color: var(--accent-green); }
-    .corr-negative { color: var(--accent-red); }
-    .corr-neutral { color: var(--text-secondary); }
-
-    /* Chart Sections */
-    .chart-section {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 20px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .section-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-    }
-
-    .section-subtitle {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.65rem;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    #candlestick-chart { width: 100%; }
-
-    .corr-chart-box {
-        position: relative;
-        width: 100%;
-        height: 280px;
-    }
-
-    #correlation-chart {
-        width: 100%;
-        max-height: 280px;
-    }
-
-    .watermark {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 48px;
-        font-weight: 700;
-        color: rgba(255, 255, 255, 0.015);
-        pointer-events: none;
-        z-index: 1;
-        white-space: nowrap;
-        letter-spacing: 4px;
-    }
-
-    /* Footer */
-    .footer {
-        text-align: center;
-        padding: 20px;
-        color: var(--text-muted);
-        font-size: 0.75rem;
-    }
-
-    .share-buttons {
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-        margin-bottom: 12px;
-        flex-wrap: wrap;
-    }
-
-    .share-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-family: 'Noto Sans KR', sans-serif;
-        font-size: 0.75rem;
-        font-weight: 400;
-        padding: 8px 16px;
-        border: 1px solid #333;
-        border-radius: 20px;
-        background: transparent;
-        color: #ccc;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-decoration: none;
-    }
-
-    .share-btn:hover {
-        background: var(--bg-tertiary);
-        color: var(--text-primary);
-        border-color: #555;
-    }
-
-    .share-btn svg {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
-    }
-
-    .footer-info {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.7rem;
-        color: var(--text-muted);
-    }
-
-    /* Loading */
-    .loading-overlay {
-        position: fixed;
-        inset: 0;
-        background: var(--bg-primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-        transition: opacity 0.4s;
-    }
-
-    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-
-    .spinner {
-        width: 30px;
-        height: 30px;
-        border: 3px solid var(--border-color);
-        border-top-color: var(--accent-yellow);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .container { padding: 12px; }
-        .header { padding: 20px 0 15px; margin-bottom: 15px; }
-        .header h1 { font-size: 1.4rem; }
-        .header p { font-size: 0.75rem; }
-        .header .btc-price { font-size: 1.6rem; }
-        .controls { gap: 6px; margin-bottom: 15px; }
-        .control-btn { padding: 6px 10px; font-size: 0.65rem; }
-        .asset-btn { padding: 6px 10px; font-size: 0.65rem; }
-        .chart-section { padding: 15px 12px; border-radius: 10px; margin-bottom: 15px; }
-        .section-title { font-size: 1rem; }
-        .corr-chart-box { height: 220px; }
-        #correlation-chart { max-height: 220px; }
-        .corr-stats { gap: 10px; }
-        .corr-stat-item { font-size: 0.65rem; }
-        .watermark { font-size: 28px; }
-        .footer { padding: 15px; font-size: 0.65rem; }
-    }
-
-    @media (max-width: 480px) {
-        .container { padding: 10px; }
-        .header h1 { font-size: 1.2rem; }
-        .header .btc-price { font-size: 1.4rem; }
-        .control-btn { padding: 5px 8px; font-size: 0.6rem; }
-        .asset-btn { padding: 5px 8px; font-size: 0.6rem; }
-        .section-title { font-size: 0.9rem; }
-    }
+@media(max-width:768px){
+  .container{padding:12px}
+  .header{padding:20px 0 15px;margin-bottom:15px}
+  .header h1{font-size:1.4rem}
+  .header p{font-size:0.75rem}
+  .header .btc-price{font-size:1.6rem}
+  .controls{gap:6px;margin-bottom:15px}
+  .control-btn{padding:6px 10px;font-size:0.65rem}
+  .asset-btn{padding:6px 10px;font-size:0.65rem}
+  .chart-section{padding:15px 12px;border-radius:10px;margin-bottom:15px}
+  .section-title{font-size:1rem}
+  .corr-chart-box{height:220px}
+  #correlation-chart{max-height:220px}
+  .corr-stats{gap:10px}
+  .corr-stat-item{font-size:0.65rem}
+  .watermark{font-size:28px}
+  .footer{padding:15px;font-size:0.65rem}
+}
+@media(max-width:480px){
+  .container{padding:10px}
+  .header h1{font-size:1.2rem}
+  .header .btc-price{font-size:1.4rem}
+  .control-btn{padding:5px 8px;font-size:0.6rem}
+  .asset-btn{padding:5px 8px;font-size:0.6rem}
+  .section-title{font-size:0.9rem}
+}
 </style>
 </head>
 <body>
@@ -394,7 +106,6 @@
 </div>
 
 <div class="container">
-    <!-- Header -->
     <header class="header">
         <h1>비트코인 자산 상관관계</h1>
         <p>주간 롤링 상관계수 · SPY · QQQ · IGV · GLD · DXY</p>
@@ -404,7 +115,6 @@
         <div class="update-badge">Updated: <span id="last-updated">--</span></div>
     </header>
 
-    <!-- Controls -->
     <nav class="controls">
         <div class="control-group">
             <label>Period</label>
@@ -421,10 +131,8 @@
         </div>
     </nav>
 
-    <!-- Correlation Stats -->
     <div class="corr-stats" id="corr-stats"></div>
 
-    <!-- Candlestick Chart -->
     <section class="chart-section">
         <div class="section-header">
             <div>
@@ -436,7 +144,6 @@
         <div id="candlestick-chart"></div>
     </section>
 
-    <!-- Correlation Chart -->
     <section class="chart-section">
         <div class="section-header">
             <div>
@@ -450,7 +157,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="share-buttons">
             <a class="share-btn" id="share-x" href="#" target="_blank">
@@ -481,9 +187,6 @@
 </div>
 
 <script>
-// ============================================================
-// State
-// ============================================================
 let DATA = null;
 let currentPeriod = 26;
 let activeAssets = new Set(['SPY']);
@@ -499,16 +202,16 @@ const ASSET_COLORS = {
 };
 
 const ASSET_LABELS = {
-  SPY: 'S&P 500',
-  QQQ: 'NASDAQ 100',
-  IGV: 'Software',
-  GLD: 'Gold',
-  DXY: 'US Dollar',
+  SPY: 'S&P 500', QQQ: 'NASDAQ 100', IGV: 'Software', GLD: 'Gold', DXY: 'US Dollar',
 };
 
-// ============================================================
-// Load Data
-// ============================================================
+// === MODIFIED: Compact price formatter ===
+function formatBtcPrice(price) {
+  if (price >= 1000) return '$' + (price / 1000).toFixed(0) + 'k';
+  if (price >= 1) return '$' + price.toFixed(0);
+  return '$' + price.toFixed(2);
+}
+
 async function loadData() {
   try {
     const resp = await fetch('data.json');
@@ -519,26 +222,25 @@ async function loadData() {
       '<div style="color:#ff4757;font-size:0.85rem;">데이터 로드 실패. data.json을 확인하세요.</div>';
     return;
   }
-
   document.getElementById('btc-price-value').textContent =
     Number(DATA.btcLatest).toLocaleString('en-US', { maximumFractionDigits: 0 });
   document.getElementById('last-updated').textContent = DATA.lastUpdated;
-
   initCandlestickChart();
   initCorrelationChart();
   updateCorrelationStats();
   setupShareLinks();
-
   setTimeout(() => document.getElementById('loading').classList.add('hidden'), 300);
 }
 
-// ============================================================
-// Candlestick Chart (TradingView Lightweight Charts)
-// ============================================================
+// === MODIFIED: Candlestick Chart with compact price labels ===
 function initCandlestickChart() {
   const container = document.getElementById('candlestick-chart');
   const width = container.parentElement.clientWidth - 40;
-  const height = Math.min(420, window.innerHeight * 0.38);
+  const isMobile = window.innerWidth <= 768;
+  const height = isMobile
+    ? Math.min(300, window.innerHeight * 0.30)
+    : Math.min(420, window.innerHeight * 0.38);
+  const fontSize = isMobile ? 9 : 11;
 
   candlestickChart = LightweightCharts.createChart(container, {
     width: width,
@@ -547,7 +249,10 @@ function initCandlestickChart() {
       background: { type: 'solid', color: 'transparent' },
       textColor: '#555555',
       fontFamily: "'JetBrains Mono', monospace",
-      fontSize: 11,
+      fontSize: fontSize,
+    },
+    localization: {
+      priceFormatter: formatBtcPrice,
     },
     grid: {
       vertLines: { color: 'rgba(255, 255, 255, 0.04)' },
@@ -556,11 +261,12 @@ function initCandlestickChart() {
     crosshair: {
       mode: LightweightCharts.CrosshairMode.Normal,
       vertLine: { color: 'rgba(255,255,255,0.1)', width: 1, style: 3 },
-      horzLine: { color: 'rgba(255,255,255,0.1)', width: 1, style: 3 },
+      horzLine: { color: 'rgba(255,255,255,0.1)', width: 1, style: 3, labelBackgroundColor: '#333' },
     },
     rightPriceScale: {
       borderColor: 'rgba(255, 255, 255, 0.06)',
       scaleMargins: { top: 0.1, bottom: 0.05 },
+      entireTextOnly: true,
     },
     timeScale: {
       borderColor: 'rgba(255, 255, 255, 0.06)',
@@ -578,6 +284,11 @@ function initCandlestickChart() {
     borderDownColor: '#ff4757',
     wickUpColor: '#00d4aa',
     wickDownColor: '#ff4757',
+    priceFormat: {
+      type: 'custom',
+      formatter: formatBtcPrice,
+      minMove: 1,
+    },
   });
 
   const candleData = DATA.candles
@@ -589,16 +300,17 @@ function initCandlestickChart() {
 
   const ro = new ResizeObserver(() => {
     const w = container.parentElement.clientWidth - 40;
-    candlestickChart.applyOptions({ width: w });
+    const mobile = window.innerWidth <= 768;
+    const h = mobile
+      ? Math.min(300, window.innerHeight * 0.30)
+      : Math.min(420, window.innerHeight * 0.38);
+    candlestickChart.applyOptions({ width: w, height: h });
   });
   ro.observe(container.parentElement);
 }
 
-// ============================================================
-// Correlation Chart (Chart.js)
-// ============================================================
+// Correlation Chart
 let syncCrosshairX = null;
-
 const crosshairSyncPlugin = {
   id: 'crosshairSync',
   afterDraw(chart) {
@@ -619,7 +331,6 @@ const crosshairSyncPlugin = {
 
 function initCorrelationChart() {
   const ctx = document.getElementById('correlation-chart').getContext('2d');
-
   correlationChart = new Chart(ctx, {
     type: 'line',
     data: { datasets: [] },
@@ -631,20 +342,17 @@ function initCorrelationChart() {
         legend: { display: false },
         tooltip: {
           backgroundColor: 'rgba(10, 10, 10, 0.95)',
-          titleColor: '#fff',
-          bodyColor: '#ccc',
-          borderColor: '#333',
-          borderWidth: 1,
+          titleColor: '#fff', bodyColor: '#ccc',
+          borderColor: '#333', borderWidth: 1,
           titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
           bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
-          padding: 12,
-          cornerRadius: 8,
+          padding: 12, cornerRadius: 8,
           callbacks: {
             label: function(ctx) {
               const val = ctx.parsed.y;
               if (val === null || val === undefined) return null;
               const sign = val >= 0 ? '+' : '';
-              return `  ${ctx.dataset.label}: ${sign}${val.toFixed(3)}`;
+              return '  ' + ctx.dataset.label + ': ' + sign + val.toFixed(3);
             }
           }
         },
@@ -656,20 +364,16 @@ function initCorrelationChart() {
           grid: { color: 'rgba(255, 255, 255, 0.04)' },
           ticks: {
             font: { family: "'JetBrains Mono', monospace", size: 10 },
-            color: '#555555',
-            maxTicksLimit: 12,
+            color: '#555555', maxTicksLimit: 12,
           },
           border: { color: 'rgba(255, 255, 255, 0.06)' },
         },
         y: {
-          position: 'right',
-          min: -1,
-          max: 1,
+          position: 'right', min: -1, max: 1,
           grid: { color: 'rgba(255, 255, 255, 0.04)' },
           ticks: {
             font: { family: "'JetBrains Mono', monospace", size: 10 },
-            color: '#555555',
-            stepSize: 0.25,
+            color: '#555555', stepSize: 0.25,
             callback: v => v.toFixed(2),
           },
           border: { color: 'rgba(255, 255, 255, 0.06)' },
@@ -718,7 +422,6 @@ function initCorrelationChart() {
       crosshairSyncPlugin,
     ],
   });
-
   updateCorrelationData();
 }
 
@@ -726,7 +429,6 @@ function updateCorrelationData() {
   if (!DATA || !correlationChart) return;
   const corrData = DATA.correlations[String(currentPeriod)];
   if (!corrData) return;
-
   const datasets = [];
   for (const asset of ['SPY', 'QQQ', 'IGV', 'GLD', 'DXY']) {
     if (!activeAssets.has(asset)) continue;
@@ -734,33 +436,25 @@ function updateCorrelationData() {
       .filter(d => d[asset] !== null && d[asset] !== undefined)
       .map(d => ({ x: d.t, y: d[asset] }));
     datasets.push({
-      label: `${asset} (${ASSET_LABELS[asset]})`,
+      label: asset + ' (' + ASSET_LABELS[asset] + ')',
       data: points,
       borderColor: ASSET_COLORS[asset].line,
       backgroundColor: ASSET_COLORS[asset].bg,
-      fill: false,
-      tension: 0.3,
-      borderWidth: 2,
+      fill: false, tension: 0.3, borderWidth: 2,
     });
   }
-
   correlationChart.data.datasets = datasets;
   correlationChart.update('none');
-  document.getElementById('corr-title').textContent = `${currentPeriod}주 롤링 상관관계`;
+  document.getElementById('corr-title').textContent = currentPeriod + '주 롤링 상관관계';
 }
 
-// ============================================================
-// Correlation Stats
-// ============================================================
 function updateCorrelationStats() {
   if (!DATA) return;
   const corrData = DATA.correlations[String(currentPeriod)];
   if (!corrData) return;
-
   const latest = corrData[corrData.length - 1];
   const container = document.getElementById('corr-stats');
   container.innerHTML = '';
-
   for (const asset of ['SPY', 'QQQ', 'IGV', 'GLD', 'DXY']) {
     if (!activeAssets.has(asset)) continue;
     const val = latest[asset];
@@ -769,18 +463,13 @@ function updateCorrelationStats() {
     const sign = val >= 0 ? '+' : '';
     const item = document.createElement('div');
     item.className = 'corr-stat-item';
-    item.innerHTML = `
-      <div class="corr-stat-dot" style="background:${ASSET_COLORS[asset].line}"></div>
-      <span class="corr-stat-name">${asset}</span>
-      <span class="corr-stat-value ${cls}">${sign}${val.toFixed(3)}</span>
-    `;
+    item.innerHTML = '<div class="corr-stat-dot" style="background:' + ASSET_COLORS[asset].line + '"></div>' +
+      '<span class="corr-stat-name">' + asset + '</span>' +
+      '<span class="corr-stat-value ' + cls + '">' + sign + val.toFixed(3) + '</span>';
     container.appendChild(item);
   }
 }
 
-// ============================================================
-// Controls
-// ============================================================
 function setPeriod(p) {
   currentPeriod = p;
   document.querySelectorAll('[data-period]').forEach(btn => {
@@ -791,7 +480,7 @@ function setPeriod(p) {
 }
 
 function toggleAsset(asset) {
-  const btn = document.querySelector(`[data-asset="${asset}"]`);
+  const btn = document.querySelector('[data-asset="' + asset + '"]');
   if (activeAssets.has(asset)) {
     activeAssets.delete(asset);
     btn.classList.remove('active');
@@ -803,21 +492,16 @@ function toggleAsset(asset) {
   updateCorrelationStats();
 }
 
-// ============================================================
 // Share
-// ============================================================
 const SHARE_URL = 'https://herdvibe.com/84';
 const SHARE_TITLE = '비트코인 자산 상관관계 대시보드';
 
 function setupShareLinks() {
-  const text = encodeURIComponent(`₿ ${SHARE_TITLE}\n\nBTC: $${Number(DATA.btcLatest).toLocaleString()}\n\n${SHARE_URL}`);
+  const text = encodeURIComponent('\u20bf ' + SHARE_TITLE + '\n\nBTC: $' + Number(DATA.btcLatest).toLocaleString() + '\n\n' + SHARE_URL);
   const url = encodeURIComponent(SHARE_URL);
-
-  document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${text}`;
-  document.getElementById('share-telegram').href = `https://t.me/share/url?url=${url}&text=${encodeURIComponent(`₿ ${SHARE_TITLE}\nBTC: $${Number(DATA.btcLatest).toLocaleString()}`)}`;
+  document.getElementById('share-x').href = 'https://twitter.com/intent/tweet?text=' + text;
+  document.getElementById('share-telegram').href = 'https://t.me/share/url?url=' + url + '&text=' + encodeURIComponent('\u20bf ' + SHARE_TITLE + '\nBTC: $' + Number(DATA.btcLatest).toLocaleString());
   document.getElementById('footer-date').textContent = DATA.lastUpdated;
-
-  // Kakao SDK init
   if (window.Kakao && !Kakao.isInitialized()) {
     Kakao.init('a43ed7b39fac35458f4f9df925a279b5');
   }
@@ -832,27 +516,15 @@ function shareKakao() {
     objectType: 'feed',
     content: {
       title: SHARE_TITLE,
-      description: `BTC: $${Number(DATA.btcLatest).toLocaleString()} · SPY/QQQ/IGV/GLD/DXY 상관관계 분석`,
+      description: 'BTC: $' + Number(DATA.btcLatest).toLocaleString() + ' \u00b7 SPY/QQQ/IGV/GLD/DXY 상관관계 분석',
       imageUrl: 'https://herdvibe.com/og-image.png',
-      link: {
-        mobileWebUrl: SHARE_URL,
-        webUrl: SHARE_URL,
-      },
+      link: { mobileWebUrl: SHARE_URL, webUrl: SHARE_URL },
     },
-    buttons: [
-      {
-        title: '대시보드 보기',
-        link: {
-          mobileWebUrl: SHARE_URL,
-          webUrl: SHARE_URL,
-        },
-      },
-    ],
+    buttons: [{ title: '대시보드 보기', link: { mobileWebUrl: SHARE_URL, webUrl: SHARE_URL } }],
   });
 }
 
 function shareInstagram() {
-  // Instagram doesn't have a direct web share API — copy link + open Instagram
   navigator.clipboard.writeText(SHARE_URL).then(() => {
     alert('링크가 복사되었습니다. 인스타그램 스토리에 붙여넣기 해주세요!');
     window.open('https://www.instagram.com/', '_blank');
@@ -863,19 +535,13 @@ function shareInstagram() {
 
 function copyLink() {
   navigator.clipboard.writeText(SHARE_URL).then(() => {
-    // Show copied feedback
     const btn = event.currentTarget;
     const original = btn.innerHTML;
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 복사완료`;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 복사완료';
     btn.style.borderColor = '#00d4aa';
     btn.style.color = '#00d4aa';
-    setTimeout(() => {
-      btn.innerHTML = original;
-      btn.style.borderColor = '';
-      btn.style.color = '';
-    }, 2000);
+    setTimeout(() => { btn.innerHTML = original; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
   }).catch(() => {
-    // Fallback
     const ta = document.createElement('textarea');
     ta.value = SHARE_URL;
     document.body.appendChild(ta);
@@ -886,12 +552,9 @@ function copyLink() {
   });
 }
 
-// ============================================================
-// Sync: Time Range + Crosshair
-// ============================================================
+// Sync
 function setupCrosshairSync() {
   if (!candlestickChart || !correlationChart) return;
-
   candlestickChart.timeScale().subscribeVisibleTimeRangeChange((range) => {
     if (!range || !correlationChart) return;
     const from = range.from;
@@ -901,7 +564,6 @@ function setupCrosshairSync() {
     correlationChart.options.scales.x.max = to;
     correlationChart.update('none');
   });
-
   candlestickChart.subscribeCrosshairMove((param) => {
     if (!param.time || !correlationChart) {
       syncCrosshairX = null;
@@ -910,7 +572,7 @@ function setupCrosshairSync() {
     }
     const t = param.time;
     const dateStr = typeof t === 'string' ? t
-      : `${t.year}-${String(t.month).padStart(2,'0')}-${String(t.day).padStart(2,'0')}`;
+      : t.year + '-' + String(t.month).padStart(2,'0') + '-' + String(t.day).padStart(2,'0');
     const scale = correlationChart.scales.x;
     if (!scale) return;
     const px = scale.getPixelForValue(new Date(dateStr).getTime());
@@ -923,9 +585,6 @@ function setupCrosshairSync() {
   });
 }
 
-// ============================================================
-// Init
-// ============================================================
 loadData().then(() => { setupCrosshairSync(); });
 </script>
 </body>
