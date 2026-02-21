@@ -576,24 +576,30 @@ function shareKakao() {
   });
 }
 
+function _clipCopy(t){if(window.parent!==window){window.parent.postMessage({type:'copy',text:t},'*')}if(navigator.clipboard&&navigator.clipboard.writeText&&window.isSecureContext){navigator.clipboard.writeText(t).catch(function(){_fbCopy(t)})}else{_fbCopy(t)}}function _fbCopy(t){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;left:-9999px;top:-9999px;opacity:0';document.body.appendChild(a);a.focus();a.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(a)}
+
 function shareInstagram() {
-  navigator.clipboard.writeText(SHARE_URL).then(function() {
-    alert('링크가 복사되었습니다. 인스타그램에 붙여넣기 해주세요!');
-  }).catch(function() {});
+  _clipCopy(SHARE_URL);
+  alert('링크가 복사되었습니다. 인스타그램에 붙여넣기 해주세요!');
 }
 
 function copyLink() {
-  navigator.clipboard.writeText(SHARE_URL).then(function() {
-    var btn = event.currentTarget;
-    var orig = btn.innerHTML;
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> 복사완료';
-    btn.style.borderColor = '#00d4aa'; btn.style.color = '#00d4aa';
-    setTimeout(function() { btn.innerHTML = orig; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
-  }).catch(function() { alert('링크가 복사되었습니다!'); });
+  _clipCopy(SHARE_URL);
+  var btn = event.currentTarget;
+  var orig = btn.innerHTML;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> 복사완료';
+  btn.style.borderColor = '#00d4aa'; btn.style.color = '#00d4aa';
+  setTimeout(function() { btn.innerHTML = orig; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
 }
 
 // ===== Init =====
 loadData();
+</script>
+<script>
+function sendHeight(){var h=document.documentElement.scrollHeight;window.parent.postMessage({id:'hvBtcCorrelation',height:h},'*')}
+window.addEventListener('load',function(){sendHeight();setTimeout(sendHeight,500);setTimeout(sendHeight,1500)});
+window.addEventListener('resize',sendHeight);
+new MutationObserver(sendHeight).observe(document.body,{childList:true,subtree:true,attributes:true});
 </script>
 </body>
 </html>
