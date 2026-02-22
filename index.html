@@ -20,7 +20,7 @@
 *{-ms-overflow-style:none;scrollbar-width:none}
 :root{--bg-primary:#0a0a0a;--bg-secondary:#111111;--bg-tertiary:#1a1a1a;--text-primary:#ffffff;--text-secondary:#888888;--text-muted:#555555;--accent-green:#00d4aa;--accent-red:#ff4757;--accent-yellow:#ffd43b;--accent-blue:#4dabf7;--border-color:#2a2a2a;--color-spy:#4dabf7;--color-qqq:#b197fc;--color-igv:#00d4aa;--color-gld:#ffd43b;--color-dxy:#ff4757}
 html,body{overflow-x:hidden}
-body{font-family:'Noto Sans KR',sans-serif;background-color:var(--bg-primary);color:var(--text-primary);min-height:100vh;line-height:1.6}
+body{font-family:'Noto Sans KR',sans-serif;background-color:var(--bg-primary);color:var(--text-primary);line-height:1.6}
 .container{max-width:1400px;margin:0 auto;padding:20px}
 .header{text-align:center;padding:30px 0 20px;border-bottom:1px solid var(--border-color);margin-bottom:20px}
 .header h1{font-size:1.8rem;font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;background:linear-gradient(135deg,#fff 0%,#888 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -596,7 +596,7 @@ function copyLink() {
 loadData();
 </script>
 <script>
-function sendHeight(){var h=document.documentElement.scrollHeight;window.parent.postMessage({id:'hvBtcCorrelation',height:h},'*')}
+function sendHeight(){var c=document.querySelector('.container');var h=c?c.offsetHeight+c.offsetTop:document.body.scrollHeight;window.parent.postMessage({id:'hvBtcCorrelation',height:h},'*')}
 window.addEventListener('load',function(){sendHeight();setTimeout(sendHeight,500);setTimeout(sendHeight,1500)});
 window.addEventListener('resize',sendHeight);
 new MutationObserver(sendHeight).observe(document.body,{childList:true,subtree:true,attributes:true});
