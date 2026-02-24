@@ -596,7 +596,7 @@ function copyLink() {
 loadData();
 </script>
 <script>
-function sendHeight(){var c=document.querySelector('.container');var h=c?c.offsetHeight+c.offsetTop:document.body.scrollHeight;window.parent.postMessage({id:'hvBtcCorrelation',height:h},'*')}
+function sendHeight(){var c=document.querySelector('.container');var h=c?c.offsetHeight+c.offsetTop:document.body.scrollHeight;window.parent.postMessage({id:'hvBtcCorrelation',height:h,desktopHeight:h,mobileHeight:Math.min(h,800)},'*')}
 window.addEventListener('load',function(){sendHeight();setTimeout(sendHeight,500);setTimeout(sendHeight,1500)});
 window.addEventListener('resize',sendHeight);
 new MutationObserver(sendHeight).observe(document.body,{childList:true,subtree:true,attributes:true});
