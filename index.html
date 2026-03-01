@@ -115,7 +115,7 @@ body{font-family:'Noto Sans KR',sans-serif;background-color:var(--bg-primary);co
 
 <div class="container">
     <header class="header">
-        <h1>비트코인 자산 상관관계</h1>
+        <h1>비트코인 vs 글로벌 자산 상관관계</h1>
         <p>주간 롤링 상관계수 · SPY · QQQ · IGV · GLD · DXY</p>
         <div class="btc-price">
             <span class="dollar">$</span><span id="btc-price-value">--</span>
@@ -575,7 +575,7 @@ function connectBinance() {
 
 // ===== Share =====
 var SHARE_URL = 'https://herdvibe.com/84';
-var SHARE_TITLE = '비트코인 자산 상관관계 대시보드';
+var SHARE_TITLE = '비트코인 vs 글로벌 자산 상관관계 대시보드';
 
 function setupShareLinks() {
   var text = encodeURIComponent('\u20bf ' + SHARE_TITLE + '\n\nBTC: $' + Number(DATA.btcLatest).toLocaleString() + '\n\n' + SHARE_URL);
