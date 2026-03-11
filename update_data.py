@@ -141,12 +141,12 @@ def generate_json():
             corr_list.append(entry)
         correlations[str(period)] = corr_list
 
-    # Weekly close prices for overlay (normalized)
+    # Weekly close prices for ratio/Z-Score dashboard
     prices = {}
-    for asset in CORRELATION_ASSETS:
-        if asset in combined.columns:
-            series = combined[asset].dropna()
-            prices[asset] = [
+    for name in TICKERS.keys():
+        if name in combined.columns:
+            series = combined[name].dropna()
+            prices[name] = [
                 {'t': dt.strftime('%Y-%m-%d'), 'v': clean(v)}
                 for dt, v in series.items()
             ]
@@ -156,6 +156,7 @@ def generate_json():
         'btcLatest': clean(btc_weekly['Close'].iloc[-1]),
         'candles': candles,
         'correlations': correlations,
+        'prices': prices,
     }
 
     with open(OUTPUT_JSON, 'w') as f:
