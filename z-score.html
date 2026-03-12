@@ -41,6 +41,15 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:va
 .live-dot{display:inline-block;width:6px;height:6px;background:#22c55e;border-radius:50%;margin-left:4px;vertical-align:middle;animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
+/* ===== Main Tab Switcher ===== */
+.main-tabs{display:flex;justify-content:center;gap:4px;margin-bottom:20px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:4px;max-width:340px;margin-left:auto;margin-right:auto}
+.main-tab-btn{font-family:'JetBrains Mono',monospace;font-size:0.8rem;font-weight:600;padding:10px 28px;border-radius:10px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.25s;letter-spacing:0.5px;position:relative}
+.main-tab-btn:hover{color:var(--text-secondary)}
+.main-tab-btn.active{background:var(--bg-tertiary);color:var(--text-primary);box-shadow:0 0 16px rgba(255,212,59,0.08)}
+.main-tab-btn.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:24px;height:2px;background:var(--accent-yellow);border-radius:1px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
 /* Stat Cards */
 .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .stat-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:14px 16px;text-align:center;transition:border-color 0.2s}
@@ -90,6 +99,32 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:va
 .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .legend-zone{width:20px;height:10px;border-radius:3px;flex-shrink:0}
 
+/* ===== Signal Tab Styles ===== */
+.sig-stat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.sig-controls{display:flex;align-items:flex-start;justify-content:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.sig-param-group{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.sig-param-group .param-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;text-align:center}
+.sig-param-row{display:flex;align-items:center;gap:8px}
+.sig-param-row label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-secondary);min-width:30px}
+.sig-input{font-family:'JetBrains Mono',monospace;font-size:0.75rem;width:60px;padding:5px 8px;border:1px solid var(--border-color);border-radius:6px;background:var(--bg-tertiary);color:var(--text-primary);text-align:center;outline:none;transition:border-color 0.2s}
+.sig-input:focus{border-color:var(--accent-yellow)}
+.sig-slider{-webkit-appearance:none;appearance:none;width:100px;height:4px;border-radius:2px;background:var(--bg-tertiary);outline:none;cursor:pointer}
+.sig-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent-yellow);cursor:pointer;border:2px solid var(--bg-primary)}
+.sig-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--accent-yellow);cursor:pointer;border:2px solid var(--bg-primary)}
+.mode-toggle{display:flex;align-items:center;gap:0;border-radius:8px;overflow:hidden;border:1px solid var(--border-color)}
+.mode-toggle-btn{font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;padding:7px 16px;border:none;background:var(--bg-secondary);color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+.mode-toggle-btn.active{background:var(--accent-yellow);color:#0a0a0a}
+.sig-btc-chart-wrapper{position:relative;height:360px}
+.sig-btc-chart-wrapper canvas{width:100%!important;height:100%!important}
+.sig-fng-chart-wrapper{position:relative;height:160px}
+.sig-fng-chart-wrapper canvas{width:100%!important;height:100%!important}
+.sig-z-chart-wrapper{position:relative;height:160px}
+.sig-z-chart-wrapper canvas{width:100%!important;height:100%!important}
+.signal-count-bar{display:flex;justify-content:center;gap:24px;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-secondary)}
+.signal-count-bar span{display:flex;align-items:center;gap:5px}
+.buy-dot{width:8px;height:8px;border-radius:50%;background:var(--accent-green)}
+.sell-dot{width:8px;height:8px;border-radius:50%;background:var(--accent-red)}
+
 /* Footer & Share */
 .footer{text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem}
 .share-buttons{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
@@ -111,6 +146,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:va
   .header p{font-size:0.75rem}
   .header .btc-price{font-size:1.6rem}
   .stat-cards{grid-template-columns:repeat(2,1fr);gap:8px}
+  .sig-stat-cards{grid-template-columns:repeat(3,1fr);gap:8px}
   .stat-value{font-size:1.1rem}
   .controls{gap:6px;margin-bottom:15px}
   .control-btn{padding:6px 10px;font-size:0.65rem}
@@ -119,18 +155,30 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:va
   .section-title{font-size:1rem}
   .ratio-chart-wrapper{height:280px}
   .zscore-chart-wrapper{height:180px}
+  .sig-btc-chart-wrapper{height:280px}
+  .sig-fng-chart-wrapper{height:140px}
+  .sig-z-chart-wrapper{height:140px}
   .watermark{font-size:28px}
+  .main-tab-btn{padding:8px 20px;font-size:0.7rem}
+  .sig-param-group{padding:10px 12px}
+  .sig-slider{width:80px}
 }
 @media(max-width:480px){
   .container{padding:10px}
   .header h1{font-size:1.2rem}
   .header .btc-price{font-size:1.4rem}
   .stat-cards{grid-template-columns:repeat(2,1fr)}
+  .sig-stat-cards{grid-template-columns:1fr 1fr 1fr}
   .stat-value{font-size:1rem}
   .control-btn{padding:5px 8px;font-size:0.6rem}
   .asset-btn{padding:5px 8px;font-size:0.6rem}
   .ratio-chart-wrapper{height:240px}
   .zscore-chart-wrapper{height:160px}
+  .sig-btc-chart-wrapper{height:240px}
+  .sig-fng-chart-wrapper{height:120px}
+  .sig-z-chart-wrapper{height:120px}
+  .sig-slider{width:60px}
+  .sig-input{width:48px;font-size:0.65rem}
 }
 </style>
 </head>
@@ -150,84 +198,215 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:va
         <div class="update-badge">Updated: <span id="last-updated">--</span></div>
     </header>
 
-    <!-- Stat Cards -->
-    <div class="stat-cards" id="stat-cards">
-        <div class="stat-card" id="card-SPY">
-            <div class="stat-label">BTC/SPY Z</div>
-            <div class="stat-value" id="z-SPY">--</div>
-            <div class="stat-sub neutral" id="z-label-SPY">--</div>
-        </div>
-        <div class="stat-card" id="card-QQQ">
-            <div class="stat-label">BTC/QQQ Z</div>
-            <div class="stat-value" id="z-QQQ">--</div>
-            <div class="stat-sub neutral" id="z-label-QQQ">--</div>
-        </div>
-        <div class="stat-card" id="card-IGV">
-            <div class="stat-label">BTC/IGV Z</div>
-            <div class="stat-value" id="z-IGV">--</div>
-            <div class="stat-sub neutral" id="z-label-IGV">--</div>
-        </div>
-        <div class="stat-card" id="card-GLD">
-            <div class="stat-label">BTC/GLD Z</div>
-            <div class="stat-value" id="z-GLD">--</div>
-            <div class="stat-sub neutral" id="z-label-GLD">--</div>
-        </div>
+    <!-- ===== Main Tab Switcher ===== -->
+    <div class="main-tabs">
+        <button class="main-tab-btn active" onclick="switchMainTab('zscore')">Z-Score</button>
+        <button class="main-tab-btn" onclick="switchMainTab('signal')">시그널</button>
     </div>
 
-    <!-- Controls -->
-    <nav class="controls">
-        <div class="control-group">
-            <label>Z-Score</label>
-            <button class="control-btn active" data-period="26" onclick="setZPeriod(26)">6M</button>
-            <button class="control-btn" data-period="52" onclick="setZPeriod(52)">1Y</button>
-        </div>
-        <div class="control-group">
-            <label>Range</label>
-            <button class="tab-btn" data-range="1y" onclick="setRange('1y')">1Y</button>
-            <button class="tab-btn" data-range="3y" onclick="setRange('3y')">3Y</button>
-            <button class="tab-btn active" data-range="all" onclick="setRange('all')">ALL</button>
-        </div>
-        <div class="asset-toggles">
-            <button class="asset-btn active" data-asset="SPY" onclick="toggleAsset('SPY')">SPY</button>
-            <button class="asset-btn" data-asset="QQQ" onclick="toggleAsset('QQQ')">QQQ</button>
-            <button class="asset-btn" data-asset="IGV" onclick="toggleAsset('IGV')">IGV</button>
-            <button class="asset-btn" data-asset="GLD" onclick="toggleAsset('GLD')">GLD</button>
-        </div>
-        <button class="control-btn" id="reset-zoom-btn" onclick="resetZoom()" style="display:none;border:1px solid #555;color:#aaa">↺ Reset</button>
-    </nav>
-
-    <!-- Ratio Chart -->
-    <section class="chart-section">
-        <div class="section-header">
-            <div>
-                <h2 class="section-title" id="ratio-title">BTC / SPY 비율</h2>
-                <span class="section-subtitle" id="ratio-subtitle">주간 종가 기준 · 로그 스케일</span>
+    <!-- ================= TAB A: Z-Score (기존) ================= -->
+    <div class="tab-content active" id="tab-zscore">
+        <!-- Stat Cards -->
+        <div class="stat-cards" id="stat-cards">
+            <div class="stat-card" id="card-SPY">
+                <div class="stat-label">BTC/SPY Z</div>
+                <div class="stat-value" id="z-SPY">--</div>
+                <div class="stat-sub neutral" id="z-label-SPY">--</div>
+            </div>
+            <div class="stat-card" id="card-QQQ">
+                <div class="stat-label">BTC/QQQ Z</div>
+                <div class="stat-value" id="z-QQQ">--</div>
+                <div class="stat-sub neutral" id="z-label-QQQ">--</div>
+            </div>
+            <div class="stat-card" id="card-IGV">
+                <div class="stat-label">BTC/IGV Z</div>
+                <div class="stat-value" id="z-IGV">--</div>
+                <div class="stat-sub neutral" id="z-label-IGV">--</div>
+            </div>
+            <div class="stat-card" id="card-GLD">
+                <div class="stat-label">BTC/GLD Z</div>
+                <div class="stat-value" id="z-GLD">--</div>
+                <div class="stat-sub neutral" id="z-label-GLD">--</div>
             </div>
         </div>
-        <div class="watermark">HERDVIBE</div>
-        <div class="ratio-chart-wrapper">
-            <canvas id="ratio-chart"></canvas>
-        </div>
-        <div class="chart-legend" id="ratio-legend"></div>
-    </section>
 
-    <!-- Z-Score Chart -->
-    <section class="chart-section">
-        <div class="section-header">
-            <div>
-                <h2 class="section-title" id="zscore-title">Z-Score (26주)</h2>
-                <span class="section-subtitle">BTC/자산 비율의 평균 회귀 이탈도</span>
+        <!-- Controls -->
+        <nav class="controls">
+            <div class="control-group">
+                <label>Z-Score</label>
+                <button class="control-btn active" data-period="26" onclick="setZPeriod(26)">6M</button>
+                <button class="control-btn" data-period="52" onclick="setZPeriod(52)">1Y</button>
+            </div>
+            <div class="control-group">
+                <label>Range</label>
+                <button class="tab-btn" data-range="1y" onclick="setRange('1y')">1Y</button>
+                <button class="tab-btn" data-range="3y" onclick="setRange('3y')">3Y</button>
+                <button class="tab-btn active" data-range="all" onclick="setRange('all')">ALL</button>
+            </div>
+            <div class="asset-toggles">
+                <button class="asset-btn active" data-asset="SPY" onclick="toggleAsset('SPY')">SPY</button>
+                <button class="asset-btn" data-asset="QQQ" onclick="toggleAsset('QQQ')">QQQ</button>
+                <button class="asset-btn" data-asset="IGV" onclick="toggleAsset('IGV')">IGV</button>
+                <button class="asset-btn" data-asset="GLD" onclick="toggleAsset('GLD')">GLD</button>
+            </div>
+            <button class="control-btn" id="reset-zoom-btn" onclick="resetZoom()" style="display:none;border:1px solid #555;color:#aaa">↺ Reset</button>
+        </nav>
+
+        <!-- Ratio Chart -->
+        <section class="chart-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title" id="ratio-title">BTC / SPY 비율</h2>
+                    <span class="section-subtitle" id="ratio-subtitle">주간 종가 기준 · 로그 스케일</span>
+                </div>
+            </div>
+            <div class="watermark">HERDVIBE</div>
+            <div class="ratio-chart-wrapper">
+                <canvas id="ratio-chart"></canvas>
+            </div>
+            <div class="chart-legend" id="ratio-legend"></div>
+        </section>
+
+        <!-- Z-Score Chart -->
+        <section class="chart-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title" id="zscore-title">Z-Score (26주)</h2>
+                    <span class="section-subtitle">BTC/자산 비율의 평균 회귀 이탈도</span>
+                </div>
+            </div>
+            <div class="watermark" style="font-size:36px">HERDVIBE</div>
+            <div class="zscore-chart-wrapper">
+                <canvas id="zscore-chart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item"><div class="legend-zone" style="background:rgba(0,212,170,0.15);border:1px solid rgba(0,212,170,0.3)"></div>Oversold (Z ≤ -2)</div>
+                <div class="legend-item"><div class="legend-zone" style="background:rgba(255,71,87,0.15);border:1px solid rgba(255,71,87,0.3)"></div>Overbought (Z ≥ +2)</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ================= TAB B: Signal ================= -->
+    <div class="tab-content" id="tab-signal">
+        <!-- Signal Stat Cards -->
+        <div class="sig-stat-cards">
+            <div class="stat-card" id="sig-card-fng">
+                <div class="stat-label">Fear & Greed</div>
+                <div class="stat-value" id="sig-fng-val">--</div>
+                <div class="stat-sub neutral" id="sig-fng-label">--</div>
+            </div>
+            <div class="stat-card" id="sig-card-z">
+                <div class="stat-label">Z-Score</div>
+                <div class="stat-value" id="sig-z-val">--</div>
+                <div class="stat-sub neutral" id="sig-z-label">--</div>
+            </div>
+            <div class="stat-card" id="sig-card-signal">
+                <div class="stat-label">현재 시그널</div>
+                <div class="stat-value" id="sig-signal-val">--</div>
+                <div class="stat-sub neutral" id="sig-signal-label">조건 미충족</div>
             </div>
         </div>
-        <div class="watermark" style="font-size:36px">HERDVIBE</div>
-        <div class="zscore-chart-wrapper">
-            <canvas id="zscore-chart"></canvas>
-        </div>
-        <div class="chart-legend">
-            <div class="legend-item"><div class="legend-zone" style="background:rgba(0,212,170,0.15);border:1px solid rgba(0,212,170,0.3)"></div>Oversold (Z ≤ -2)</div>
-            <div class="legend-item"><div class="legend-zone" style="background:rgba(255,71,87,0.15);border:1px solid rgba(255,71,87,0.3)"></div>Overbought (Z ≥ +2)</div>
-        </div>
-    </section>
+
+        <!-- Signal Controls -->
+        <nav class="sig-controls">
+            <div class="control-group">
+                <label>자산</label>
+                <button class="asset-btn active" data-sig-asset="SPY" onclick="setSigAsset('SPY')">SPY</button>
+                <button class="asset-btn" data-sig-asset="QQQ" onclick="setSigAsset('QQQ')">QQQ</button>
+                <button class="asset-btn" data-sig-asset="IGV" onclick="setSigAsset('IGV')">IGV</button>
+                <button class="asset-btn" data-sig-asset="GLD" onclick="setSigAsset('GLD')">GLD</button>
+            </div>
+            <div class="control-group">
+                <label>Z기간</label>
+                <button class="control-btn active" data-sig-period="26" onclick="setSigZPeriod(26)">6M</button>
+                <button class="control-btn" data-sig-period="52" onclick="setSigZPeriod(52)">1Y</button>
+            </div>
+            <div class="control-group">
+                <label>Range</label>
+                <button class="tab-btn" data-sig-range="1y" onclick="setSigRange('1y')">1Y</button>
+                <button class="tab-btn" data-sig-range="3y" onclick="setSigRange('3y')">3Y</button>
+                <button class="tab-btn active" data-sig-range="all" onclick="setSigRange('all')">ALL</button>
+            </div>
+            <div class="sig-param-group">
+                <div class="param-title">F&G 임계값</div>
+                <div class="sig-param-row">
+                    <label style="color:var(--accent-green)">매수≤</label>
+                    <input type="range" class="sig-slider" id="fng-buy-slider" min="0" max="50" value="10" oninput="onFngBuyChange(this.value)">
+                    <input type="number" class="sig-input" id="fng-buy-input" value="10" min="0" max="100" onchange="onFngBuyChange(this.value)">
+                </div>
+                <div class="sig-param-row">
+                    <label style="color:var(--accent-red)">매도≥</label>
+                    <input type="range" class="sig-slider" id="fng-sell-slider" min="50" max="100" value="90" oninput="onFngSellChange(this.value)">
+                    <input type="number" class="sig-input" id="fng-sell-input" value="90" min="0" max="100" onchange="onFngSellChange(this.value)">
+                </div>
+            </div>
+            <div class="sig-param-group">
+                <div class="param-title">Z-Score 임계값</div>
+                <div class="sig-param-row">
+                    <label style="color:var(--accent-green)">매수≤</label>
+                    <input type="number" class="sig-input" id="z-buy-input" value="-2.0" step="0.1" onchange="onZThresholdChange()">
+                </div>
+                <div class="sig-param-row">
+                    <label style="color:var(--accent-red)">매도≥</label>
+                    <input type="number" class="sig-input" id="z-sell-input" value="2.0" step="0.1" onchange="onZThresholdChange()">
+                </div>
+            </div>
+            <div class="sig-param-group">
+                <div class="param-title">조건</div>
+                <div class="mode-toggle">
+                    <button class="mode-toggle-btn active" id="mode-and-btn" onclick="setSigMode('AND')">AND</button>
+                    <button class="mode-toggle-btn" id="mode-or-btn" onclick="setSigMode('OR')">OR</button>
+                </div>
+            </div>
+            <button class="control-btn" id="sig-reset-zoom-btn" onclick="sigResetZoom()" style="display:none;border:1px solid #555;color:#aaa">↺ Reset</button>
+        </nav>
+
+        <!-- BTC Price + Signals Chart -->
+        <section class="chart-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title" id="sig-btc-title">BTC 가격 · 매수/매도 시그널</h2>
+                    <span class="section-subtitle">일별 종가 · F&G + Z-Score 조건</span>
+                </div>
+            </div>
+            <div class="watermark">HERDVIBE</div>
+            <div class="sig-btc-chart-wrapper">
+                <canvas id="sig-btc-chart"></canvas>
+            </div>
+            <div class="signal-count-bar" id="signal-count-bar">
+                <span><span class="buy-dot"></span> 매수 <b id="buy-count">0</b>회</span>
+                <span><span class="sell-dot"></span> 매도 <b id="sell-count">0</b>회</span>
+            </div>
+        </section>
+
+        <!-- F&G Sub Chart -->
+        <section class="chart-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Fear & Greed Index</h2>
+                    <span class="section-subtitle">0 = Extreme Fear · 100 = Extreme Greed</span>
+                </div>
+            </div>
+            <div class="watermark" style="font-size:32px">HERDVIBE</div>
+            <div class="sig-fng-chart-wrapper">
+                <canvas id="sig-fng-chart"></canvas>
+            </div>
+        </section>
+
+        <!-- Z-Score Sub Chart -->
+        <section class="chart-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title" id="sig-z-title">Z-Score (26주)</h2>
+                    <span class="section-subtitle" id="sig-z-subtitle">BTC/SPY 기준</span>
+                </div>
+            </div>
+            <div class="watermark" style="font-size:32px">HERDVIBE</div>
+            <div class="sig-z-chart-wrapper">
+                <canvas id="sig-z-chart"></canvas>
+            </div>
+        </section>
+    </div>
 
     <footer class="footer">
         <div class="share-buttons">
@@ -259,7 +438,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:va
 </div>
 
 <script>
-// ===== State =====
+// ============================================================
+// TAB A: Z-Score (기존 코드 — 변경 없음)
+// ============================================================
 var DATA = null;
 var currentZPeriod = 26;
 var currentRange = 'all';
@@ -278,41 +459,31 @@ var ASSET_LABELS = {
   SPY: 'S&P 500', QQQ: 'NASDAQ 100', IGV: 'Software', GLD: 'Gold',
 };
 
-// ===== Z-Score Calculation =====
 function calcRatioAndZScore(btcPrices, assetPrices, lookback) {
-  // Align dates
   var assetMap = {};
   assetPrices.forEach(function(p) { assetMap[p.t] = p.v; });
-
   var aligned = [];
   btcPrices.forEach(function(p) {
     if (assetMap[p.t] != null && p.v != null && assetMap[p.t] > 0) {
       aligned.push({ t: p.t, ratio: p.v / assetMap[p.t] });
     }
   });
-
-  // Calculate rolling Z-Score
   var result = [];
   for (var i = 0; i < aligned.length; i++) {
     var entry = { t: aligned[i].t, ratio: aligned[i].ratio, z: null };
     if (i >= lookback - 1) {
       var window = [];
-      for (var j = i - lookback + 1; j <= i; j++) {
-        window.push(aligned[j].ratio);
-      }
+      for (var j = i - lookback + 1; j <= i; j++) window.push(aligned[j].ratio);
       var mean = window.reduce(function(a, b) { return a + b; }, 0) / window.length;
       var variance = window.reduce(function(a, b) { return a + (b - mean) * (b - mean); }, 0) / window.length;
       var std = Math.sqrt(variance);
-      if (std > 0) {
-        entry.z = (aligned[i].ratio - mean) / std;
-      }
+      if (std > 0) entry.z = (aligned[i].ratio - mean) / std;
     }
     result.push(entry);
   }
   return result;
 }
 
-// ===== Data Loading =====
 async function loadData() {
   try {
     var resp = await fetch('data.json?v=' + Date.now());
@@ -322,21 +493,20 @@ async function loadData() {
       '<div style="color:#ff4757;font-size:0.85rem;">데이터 로드 실패</div>';
     return;
   }
-
   document.getElementById('btc-price-value').textContent =
     Number(DATA.btcLatest).toLocaleString('en-US', { maximumFractionDigits: 0 });
   document.getElementById('last-updated').textContent = DATA.lastUpdated;
   document.getElementById('footer-date').textContent = DATA.lastUpdated;
-
   updateStatCards();
   initRatioChart();
   initZScoreChart();
   setupShareLinks();
   connectBinance();
+  // Also load signal data
+  loadSignalData();
   setTimeout(function() { document.getElementById('loading').classList.add('hidden'); }, 300);
 }
 
-// ===== Stat Cards =====
 function updateStatCards() {
   if (!DATA || !DATA.prices || !DATA.prices.BTC) return;
   ASSETS.forEach(function(asset) {
@@ -349,33 +519,23 @@ function updateStatCards() {
     var el = document.getElementById('z-' + asset);
     var labelEl = document.getElementById('z-label-' + asset);
     var cardEl = document.getElementById('card-' + asset);
-
     if (!last) { el.textContent = '--'; return; }
-
     var z = last.z;
     var sign = z >= 0 ? '+' : '';
     el.textContent = sign + z.toFixed(2);
-
     cardEl.classList.remove('oversold', 'overbought');
     if (z <= -2) {
-      el.style.color = '#00d4aa';
-      labelEl.textContent = 'BTC Oversold';
-      labelEl.className = 'stat-sub oversold';
-      cardEl.classList.add('oversold');
+      el.style.color = '#00d4aa'; labelEl.textContent = 'BTC Oversold';
+      labelEl.className = 'stat-sub oversold'; cardEl.classList.add('oversold');
     } else if (z >= 2) {
-      el.style.color = '#ff4757';
-      labelEl.textContent = 'BTC Overbought';
-      labelEl.className = 'stat-sub overbought';
-      cardEl.classList.add('overbought');
+      el.style.color = '#ff4757'; labelEl.textContent = 'BTC Overbought';
+      labelEl.className = 'stat-sub overbought'; cardEl.classList.add('overbought');
     } else {
-      el.style.color = '#ffffff';
-      labelEl.textContent = '중립';
-      labelEl.className = 'stat-sub neutral';
+      el.style.color = '#ffffff'; labelEl.textContent = '중립'; labelEl.className = 'stat-sub neutral';
     }
   });
 }
 
-// ===== Range Slicing =====
 function sliceByRange(data) {
   if (currentRange === 'all') return data;
   var years = currentRange === '1y' ? 1 : 3;
@@ -386,14 +546,11 @@ function sliceByRange(data) {
   return data.filter(function(d) { return d.t >= cutoffStr; });
 }
 
-// ===== Ratio Chart =====
 function initRatioChart() {
   if (ratioChart) { ratioChart.destroy(); ratioChart = null; }
   if (!DATA || !DATA.prices || !DATA.prices.BTC) return;
-
   var datasets = [];
   var legendHtml = '';
-
   ASSETS.forEach(function(asset) {
     if (asset !== activeAsset) return;
     if (!DATA.prices[asset]) return;
@@ -401,38 +558,29 @@ function initRatioChart() {
     var sliced = sliceByRange(series);
     var points = sliced.map(function(d) { return { x: d.t, y: d.ratio }; });
     datasets.push({
-      label: 'BTC/' + asset,
-      data: points,
+      label: 'BTC/' + asset, data: points,
       borderColor: ASSET_COLORS[asset].line,
       backgroundColor: function(ctx) {
-        var c = ctx.chart;
-        if (!c.chartArea) return ASSET_COLORS[asset].bg;
+        var c = ctx.chart; if (!c.chartArea) return ASSET_COLORS[asset].bg;
         var g = c.ctx.createLinearGradient(0, c.chartArea.top, 0, c.chartArea.bottom);
         g.addColorStop(0, ASSET_COLORS[asset].bg.replace('0.08', '0.15'));
         g.addColorStop(1, ASSET_COLORS[asset].bg.replace('0.08', '0.01'));
         return g;
       },
-      fill: true, borderWidth: 2, tension: 0.15,
-      pointRadius: 0, pointHoverRadius: 4
+      fill: true, borderWidth: 2, tension: 0.15, pointRadius: 0, pointHoverRadius: 4
     });
     legendHtml += '<div class="legend-item"><div class="legend-dot" style="background:' +
       ASSET_COLORS[asset].line + '"></div>BTC/' + asset + ' (' + ASSET_LABELS[asset] + ')</div>';
   });
-
   document.getElementById('ratio-legend').innerHTML = legendHtml;
-
-  var timeUnit = 'year';
-  var maxTicks = 14;
+  var timeUnit = 'year', maxTicks = 14;
   if (currentRange === '1y') { timeUnit = 'month'; maxTicks = 12; }
   else if (currentRange === '3y') { timeUnit = 'quarter'; maxTicks = 10; }
-
   var ctx = document.getElementById('ratio-chart').getContext('2d');
   ratioChart = new Chart(ctx, {
-    type: 'line',
-    data: { datasets: datasets },
+    type: 'line', data: { datasets: datasets },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      animation: { duration: 400 },
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
@@ -442,70 +590,38 @@ function initRatioChart() {
           titleFont: { family: "'JetBrains Mono', monospace" },
           bodyFont: { family: "'JetBrains Mono', monospace" },
           callbacks: {
-            title: function(ctx) {
-              var d = new Date(ctx[0].raw.x + 'T00:00:00');
-              return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            },
-            label: function(ctx) {
-              return ctx.dataset.label + ': ' + ctx.raw.y.toFixed(2);
-            }
+            title: function(ctx) { var d = new Date(ctx[0].raw.x + 'T00:00:00'); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); },
+            label: function(ctx) { return ctx.dataset.label + ': ' + ctx.raw.y.toFixed(2); }
           }
         },
         zoom: {
           pan: { enabled: true, mode: 'x', threshold: 5, onPanComplete: function() { syncZoomFromRatio(); } },
-          zoom: {
-            wheel: { enabled: true, speed: 0.1 },
-            pinch: { enabled: true },
-            mode: 'x',
-            onZoomComplete: function() { syncZoomFromRatio(); }
-          }
+          zoom: { wheel: { enabled: true, speed: 0.1 }, pinch: { enabled: true }, mode: 'x', onZoomComplete: function() { syncZoomFromRatio(); } }
         }
       },
       scales: {
-        x: {
-          type: 'time',
-          time: { unit: timeUnit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
-          grid: { color: 'rgba(255,255,255,0.04)' },
-          ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, maxTicksLimit: maxTicks },
-          border: { color: 'rgba(255,255,255,0.06)' }
-        },
-        y: {
-          type: 'logarithmic',
-          position: 'right',
-          grid: { color: 'rgba(255,255,255,0.04)' },
-          ticks: {
-            color: '#555',
-            font: { family: "'JetBrains Mono', monospace", size: 10 },
-            callback: function(v) {
-              if (v >= 1000) return (v / 1000).toFixed(0) + 'k';
-              if (v >= 1) return v.toFixed(0);
-              return v.toFixed(2);
-            }
-          },
-          border: { color: 'rgba(255,255,255,0.06)' }
-        }
+        x: { type: 'time', time: { unit: timeUnit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
+          grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, maxTicksLimit: maxTicks }, border: { color: 'rgba(255,255,255,0.06)' } },
+        y: { type: 'logarithmic', position: 'right', grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 },
+            callback: function(v) { if (v >= 1000) return (v / 1000).toFixed(0) + 'k'; if (v >= 1) return v.toFixed(0); return v.toFixed(2); } },
+          border: { color: 'rgba(255,255,255,0.06)' } }
       }
     }
   });
-
   document.getElementById('ratio-title').textContent = 'BTC / ' + activeAsset + ' 비율';
 }
 
-// ===== Z-Score Chart =====
 function initZScoreChart() {
   if (zscoreChart) { zscoreChart.destroy(); zscoreChart = null; }
   if (!DATA || !DATA.prices || !DATA.prices.BTC) return;
-
   var datasets = [];
   ASSETS.forEach(function(asset) {
     if (asset !== activeAsset) return;
     if (!DATA.prices[asset]) return;
     var series = calcRatioAndZScore(DATA.prices.BTC, DATA.prices[asset], currentZPeriod);
     var sliced = sliceByRange(series);
-
-    // Color each point based on Z value
-    var points = [];
-    var colors = [];
+    var points = [], colors = [];
     sliced.forEach(function(d) {
       if (d.z != null) {
         points.push({ x: d.t, y: d.z });
@@ -514,214 +630,617 @@ function initZScoreChart() {
         else colors.push(ASSET_COLORS[asset].line);
       }
     });
-
     datasets.push({
-      label: 'BTC/' + asset + ' Z-Score',
-      data: points,
-      borderColor: ASSET_COLORS[asset].line,
-      backgroundColor: 'transparent',
-      fill: false, borderWidth: 2, tension: 0.2,
-      pointRadius: 0, pointHoverRadius: 5,
+      label: 'BTC/' + asset + ' Z-Score', data: points,
+      borderColor: ASSET_COLORS[asset].line, backgroundColor: 'transparent',
+      fill: false, borderWidth: 2, tension: 0.2, pointRadius: 0, pointHoverRadius: 5,
       pointHoverBackgroundColor: ASSET_COLORS[asset].line,
-      segment: {
-        borderColor: function(ctx) {
-          var yVal = ctx.p1.parsed.y;
-          if (yVal <= -2) return '#00d4aa';
-          if (yVal >= 2) return '#ff4757';
-          return ASSET_COLORS[asset].line;
-        }
-      }
+      segment: { borderColor: function(ctx) { var y = ctx.p1.parsed.y; if (y <= -2) return '#00d4aa'; if (y >= 2) return '#ff4757'; return ASSET_COLORS[asset].line; } }
     });
   });
-
-  var timeUnit = 'year';
-  var maxTicks = 14;
+  var timeUnit = 'year', maxTicks = 14;
   if (currentRange === '1y') { timeUnit = 'month'; maxTicks = 12; }
   else if (currentRange === '3y') { timeUnit = 'quarter'; maxTicks = 10; }
-
   var ctx = document.getElementById('zscore-chart').getContext('2d');
   zscoreChart = new Chart(ctx, {
-    type: 'line',
-    data: { datasets: datasets },
+    type: 'line', data: { datasets: datasets },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      animation: { duration: 400 },
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(10,10,10,0.95)',
-          titleColor: '#fff', bodyColor: '#ccc',
+          backgroundColor: 'rgba(10,10,10,0.95)', titleColor: '#fff', bodyColor: '#ccc',
           borderColor: '#333', borderWidth: 1,
           titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
           bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
           padding: 12, cornerRadius: 8,
           callbacks: {
-            title: function(ctx) {
-              var d = new Date(ctx[0].raw.x + 'T00:00:00');
-              return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            },
-            label: function(ctx) {
-              var z = ctx.raw.y;
-              var sign = z >= 0 ? '+' : '';
-              var status = '';
-              if (z <= -2) status = ' (Oversold)';
-              else if (z >= 2) status = ' (Overbought)';
-              return '  Z-Score: ' + sign + z.toFixed(2) + status;
-            }
+            title: function(ctx) { var d = new Date(ctx[0].raw.x + 'T00:00:00'); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); },
+            label: function(ctx) { var z = ctx.raw.y; var sign = z >= 0 ? '+' : ''; var s = ''; if (z <= -2) s = ' (Oversold)'; else if (z >= 2) s = ' (Overbought)'; return '  Z-Score: ' + sign + z.toFixed(2) + s; }
           }
         },
         zoom: {
           pan: { enabled: true, mode: 'x', threshold: 5, onPanComplete: function() { syncZoomFromZScore(); } },
-          zoom: {
-            wheel: { enabled: true, speed: 0.1 },
-            pinch: { enabled: true },
-            mode: 'x',
-            onZoomComplete: function() { syncZoomFromZScore(); }
-          }
+          zoom: { wheel: { enabled: true, speed: 0.1 }, pinch: { enabled: true }, mode: 'x', onZoomComplete: function() { syncZoomFromZScore(); } }
         }
       },
       scales: {
-        x: {
-          type: 'time',
-          time: { unit: timeUnit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
-          grid: { color: 'rgba(255,255,255,0.04)' },
-          ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, maxTicksLimit: maxTicks },
-          border: { color: 'rgba(255,255,255,0.06)' }
-        },
-        y: {
-          position: 'right',
-          grid: { color: 'rgba(255,255,255,0.04)' },
-          ticks: {
-            color: '#555',
-            font: { family: "'JetBrains Mono', monospace", size: 10 },
-            stepSize: 1,
-            callback: function(v) { return (v >= 0 ? '+' : '') + v.toFixed(0); }
-          },
-          border: { color: 'rgba(255,255,255,0.06)' }
-        }
+        x: { type: 'time', time: { unit: timeUnit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
+          grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, maxTicksLimit: maxTicks }, border: { color: 'rgba(255,255,255,0.06)' } },
+        y: { position: 'right', grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, stepSize: 1, callback: function(v) { return (v >= 0 ? '+' : '') + v.toFixed(0); } },
+          border: { color: 'rgba(255,255,255,0.06)' } }
       }
     },
     plugins: [
-      {
-        id: 'zeroLine',
-        beforeDraw: function(chart) {
-          var ctx = chart.ctx, area = chart.chartArea, scales = chart.scales;
-          if (!area) return;
-          var y0 = scales.y.getPixelForValue(0);
-          ctx.save();
-          ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-          ctx.lineWidth = 1;
-          ctx.setLineDash([6, 4]);
-          ctx.beginPath(); ctx.moveTo(area.left, y0); ctx.lineTo(area.right, y0); ctx.stroke();
+      { id: 'zeroLine', beforeDraw: function(chart) {
+          var ctx = chart.ctx, area = chart.chartArea, scales = chart.scales; if (!area) return;
+          var y0 = scales.y.getPixelForValue(0); ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+          ctx.lineWidth = 1; ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.moveTo(area.left, y0); ctx.lineTo(area.right, y0); ctx.stroke(); ctx.restore();
+      }},
+      { id: 'oversoldOverboughtZones', beforeDraw: function(chart) {
+          var ctx = chart.ctx, area = chart.chartArea, yScale = chart.scales.y; if (!area) return; ctx.save();
+          var yNeg2 = yScale.getPixelForValue(-2), yMin = yScale.getPixelForValue(yScale.min);
+          if (yNeg2 < yMin) { ctx.fillStyle = 'rgba(0,212,170,0.06)'; ctx.fillRect(area.left, yNeg2, area.width, yMin - yNeg2);
+            ctx.strokeStyle = 'rgba(0,212,170,0.25)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(area.left, yNeg2); ctx.lineTo(area.right, yNeg2); ctx.stroke(); }
+          var yPos2 = yScale.getPixelForValue(2), yMax = yScale.getPixelForValue(yScale.max);
+          if (yPos2 > yMax) { ctx.fillStyle = 'rgba(255,71,87,0.06)'; ctx.fillRect(area.left, yMax, area.width, yPos2 - yMax);
+            ctx.strokeStyle = 'rgba(255,71,87,0.25)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(area.left, yPos2); ctx.lineTo(area.right, yPos2); ctx.stroke(); }
           ctx.restore();
-        }
-      },
-      {
-        id: 'oversoldOverboughtZones',
-        beforeDraw: function(chart) {
-          var ctx = chart.ctx, area = chart.chartArea, yScale = chart.scales.y;
-          if (!area) return;
-          ctx.save();
-
-          // Oversold zone (Z <= -2)
-          var yNeg2 = yScale.getPixelForValue(-2);
-          var yMin = yScale.getPixelForValue(yScale.min);
-          if (yNeg2 < yMin) {
-            ctx.fillStyle = 'rgba(0,212,170,0.06)';
-            ctx.fillRect(area.left, yNeg2, area.width, yMin - yNeg2);
-            // -2 line
-            ctx.strokeStyle = 'rgba(0,212,170,0.25)';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath(); ctx.moveTo(area.left, yNeg2); ctx.lineTo(area.right, yNeg2); ctx.stroke();
-          }
-
-          // Overbought zone (Z >= +2)
-          var yPos2 = yScale.getPixelForValue(2);
-          var yMax = yScale.getPixelForValue(yScale.max);
-          if (yPos2 > yMax) {
-            ctx.fillStyle = 'rgba(255,71,87,0.06)';
-            ctx.fillRect(area.left, yMax, area.width, yPos2 - yMax);
-            // +2 line
-            ctx.strokeStyle = 'rgba(255,71,87,0.25)';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath(); ctx.moveTo(area.left, yPos2); ctx.lineTo(area.right, yPos2); ctx.stroke();
-          }
-
-          ctx.restore();
-        }
-      }
+      }}
     ]
   });
-
   var periodLabel = currentZPeriod === 26 ? '6개월' : '1년';
   document.getElementById('zscore-title').textContent = 'Z-Score (' + periodLabel + ')';
 }
 
-// ===== Zoom Sync =====
+// Zoom Sync (Tab A)
 var _syncing = false;
 function syncZoomFromRatio() {
-  if (_syncing || !ratioChart || !zscoreChart) return;
-  _syncing = true;
-  var xScale = ratioChart.scales.x;
-  zscoreChart.options.scales.x.min = xScale.min;
-  zscoreChart.options.scales.x.max = xScale.max;
-  zscoreChart.update('none');
-  document.getElementById('reset-zoom-btn').style.display = '';
-  _syncing = false;
+  if (_syncing || !ratioChart || !zscoreChart) return; _syncing = true;
+  var xScale = ratioChart.scales.x; zscoreChart.options.scales.x.min = xScale.min; zscoreChart.options.scales.x.max = xScale.max;
+  zscoreChart.update('none'); document.getElementById('reset-zoom-btn').style.display = ''; _syncing = false;
 }
 function syncZoomFromZScore() {
-  if (_syncing || !ratioChart || !zscoreChart) return;
-  _syncing = true;
-  var xScale = zscoreChart.scales.x;
-  ratioChart.options.scales.x.min = xScale.min;
-  ratioChart.options.scales.x.max = xScale.max;
-  ratioChart.update('none');
-  document.getElementById('reset-zoom-btn').style.display = '';
-  _syncing = false;
+  if (_syncing || !ratioChart || !zscoreChart) return; _syncing = true;
+  var xScale = zscoreChart.scales.x; ratioChart.options.scales.x.min = xScale.min; ratioChart.options.scales.x.max = xScale.max;
+  ratioChart.update('none'); document.getElementById('reset-zoom-btn').style.display = ''; _syncing = false;
 }
 function resetZoom() {
-  if (ratioChart) ratioChart.resetZoom();
-  if (zscoreChart) zscoreChart.resetZoom();
+  if (ratioChart) ratioChart.resetZoom(); if (zscoreChart) zscoreChart.resetZoom();
   document.getElementById('reset-zoom-btn').style.display = 'none';
 }
 
-// ===== Controls =====
+// Tab A Controls
 function setZPeriod(p) {
   currentZPeriod = p;
-  document.querySelectorAll('[data-period]').forEach(function(btn) {
-    btn.classList.toggle('active', parseInt(btn.dataset.period) === p);
-  });
-  updateStatCards();
-  initRatioChart();
-  initZScoreChart();
-  document.getElementById('reset-zoom-btn').style.display = 'none';
+  document.querySelectorAll('[data-period]').forEach(function(btn) { btn.classList.toggle('active', parseInt(btn.dataset.period) === p); });
+  updateStatCards(); initRatioChart(); initZScoreChart(); document.getElementById('reset-zoom-btn').style.display = 'none';
 }
-
 function setRange(r) {
   currentRange = r;
-  document.querySelectorAll('[data-range]').forEach(function(btn) {
-    btn.classList.toggle('active', btn.dataset.range === r);
-  });
-  initRatioChart();
-  initZScoreChart();
-  document.getElementById('reset-zoom-btn').style.display = 'none';
+  document.querySelectorAll('[data-range]').forEach(function(btn) { btn.classList.toggle('active', btn.dataset.range === r); });
+  initRatioChart(); initZScoreChart(); document.getElementById('reset-zoom-btn').style.display = 'none';
 }
-
 function toggleAsset(asset) {
-  // Single select mode
   activeAsset = asset;
-  document.querySelectorAll('.asset-btn').forEach(function(btn) {
-    btn.classList.toggle('active', btn.dataset.asset === asset);
-  });
-  initRatioChart();
-  initZScoreChart();
-  document.getElementById('reset-zoom-btn').style.display = 'none';
+  document.querySelectorAll('.asset-btn:not([data-sig-asset])').forEach(function(btn) { btn.classList.toggle('active', btn.dataset.asset === asset); });
+  initRatioChart(); initZScoreChart(); document.getElementById('reset-zoom-btn').style.display = 'none';
 }
 
-// ===== Binance WebSocket =====
+// ============================================================
+// MAIN TAB SWITCHER
+// ============================================================
+function switchMainTab(tab) {
+  document.querySelectorAll('.main-tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+  if (tab === 'zscore') {
+    document.querySelector('.main-tab-btn:nth-child(1)').classList.add('active');
+    document.getElementById('tab-zscore').classList.add('active');
+  } else {
+    document.querySelector('.main-tab-btn:nth-child(2)').classList.add('active');
+    document.getElementById('tab-signal').classList.add('active');
+    // Render signal charts if data loaded
+    if (SIG.data && !SIG.rendered) { renderAllSignalCharts(); SIG.rendered = true; }
+  }
+  sendHeight();
+}
+
+// ============================================================
+// TAB B: Signal Dashboard
+// ============================================================
+var SIG = {
+  data: null,       // F&G repo data
+  asset: 'SPY',
+  zPeriod: 26,
+  range: 'all',
+  mode: 'AND',
+  fngBuy: 10,
+  fngSell: 90,
+  zBuy: -2.0,
+  zSell: 2.0,
+  btcChart: null,
+  fngChart: null,
+  zChart: null,
+  rendered: false
+};
+
+var FNG_DATA_URL = 'https://kittycapital.github.io/bitcoin-feargreed-/data.json';
+
+async function loadSignalData() {
+  try {
+    var resp = await fetch(FNG_DATA_URL + '?v=' + Date.now());
+    SIG.data = await resp.json();
+  } catch (e) {
+    console.warn('F&G data load failed:', e);
+    return;
+  }
+  updateSigStatCards();
+}
+
+// Build daily Z-Score by forward-filling weekly Z onto daily dates
+function buildDailyZSeries(dailyDates, weeklyZSeries) {
+  // weeklyZSeries = [{t:'YYYY-MM-DD', z:number|null}, ...]
+  var zMap = {};
+  weeklyZSeries.forEach(function(d) { if (d.z != null) zMap[d.t] = d.z; });
+
+  // Get sorted weekly dates that have Z values
+  var wDates = Object.keys(zMap).sort();
+  var result = [];
+  var lastZ = null;
+
+  dailyDates.forEach(function(date) {
+    // If exact match in weekly data
+    if (zMap[date] != null) {
+      lastZ = zMap[date];
+    } else {
+      // Find the most recent weekly Z before this date
+      for (var i = wDates.length - 1; i >= 0; i--) {
+        if (wDates[i] <= date) { lastZ = zMap[wDates[i]]; break; }
+      }
+    }
+    result.push({ t: date, z: lastZ });
+  });
+  return result;
+}
+
+function computeSignals() {
+  if (!SIG.data || !DATA || !DATA.prices || !DATA.prices.BTC) return { dates: [], btc: [], fng: [], z: [], buys: [], sells: [] };
+
+  var dailyDates = SIG.data.dates;
+  var dailyBtc = SIG.data.btc_prices;
+  var dailyFng = SIG.data.fng_index;
+
+  // Compute weekly Z for selected asset
+  var asset = SIG.asset;
+  if (!DATA.prices[asset]) return { dates: [], btc: [], fng: [], z: [], buys: [], sells: [] };
+  var weeklyZ = calcRatioAndZScore(DATA.prices.BTC, DATA.prices[asset], SIG.zPeriod);
+  var dailyZ = buildDailyZSeries(dailyDates, weeklyZ);
+
+  // Range filter
+  var startIdx = 0;
+  if (SIG.range !== 'all') {
+    var years = SIG.range === '1y' ? 1 : 3;
+    var lastDate = new Date(dailyDates[dailyDates.length - 1]);
+    var cutoff = new Date(lastDate);
+    cutoff.setFullYear(cutoff.getFullYear() - years);
+    var cutStr = cutoff.toISOString().split('T')[0];
+    for (var i = 0; i < dailyDates.length; i++) {
+      if (dailyDates[i] >= cutStr) { startIdx = i; break; }
+    }
+  }
+
+  var dates = [], btc = [], fng = [], z = [], buys = [], sells = [];
+  for (var i = startIdx; i < dailyDates.length; i++) {
+    var price = dailyBtc[i];
+    var fVal = dailyFng[i];
+    var zVal = dailyZ[i] ? dailyZ[i].z : null;
+    if (price == null) continue;
+
+    dates.push(dailyDates[i]);
+    btc.push(price);
+    fng.push(fVal);
+    z.push(zVal);
+
+    // Signal logic
+    var fngBuyMet = (fVal != null && fVal <= SIG.fngBuy);
+    var fngSellMet = (fVal != null && fVal >= SIG.fngSell);
+    var zBuyMet = (zVal != null && zVal <= SIG.zBuy);
+    var zSellMet = (zVal != null && zVal >= SIG.zSell);
+
+    var isBuy = false, isSell = false;
+    if (SIG.mode === 'AND') {
+      isBuy = fngBuyMet && zBuyMet;
+      isSell = fngSellMet && zSellMet;
+    } else {
+      isBuy = fngBuyMet || zBuyMet;
+      isSell = fngSellMet || zSellMet;
+    }
+    buys.push(isBuy ? price : null);
+    sells.push(isSell ? price : null);
+  }
+
+  return { dates: dates, btc: btc, fng: fng, z: z, buys: buys, sells: sells };
+}
+
+function updateSigStatCards() {
+  if (!SIG.data) return;
+  var fng = SIG.data.fng_index;
+  var lastFng = null;
+  for (var i = fng.length - 1; i >= 0; i--) { if (fng[i] != null) { lastFng = fng[i]; break; } }
+
+  var fngEl = document.getElementById('sig-fng-val');
+  var fngLabel = document.getElementById('sig-fng-label');
+  var fngCard = document.getElementById('sig-card-fng');
+  fngCard.classList.remove('oversold', 'overbought');
+  if (lastFng != null) {
+    fngEl.textContent = lastFng;
+    if (lastFng <= 25) { fngEl.style.color = '#00d4aa'; fngLabel.textContent = 'Extreme Fear'; fngLabel.className = 'stat-sub oversold'; fngCard.classList.add('oversold'); }
+    else if (lastFng <= 45) { fngEl.style.color = '#4dabf7'; fngLabel.textContent = 'Fear'; fngLabel.className = 'stat-sub neutral'; }
+    else if (lastFng <= 55) { fngEl.style.color = '#ffffff'; fngLabel.textContent = 'Neutral'; fngLabel.className = 'stat-sub neutral'; }
+    else if (lastFng <= 75) { fngEl.style.color = '#ffd43b'; fngLabel.textContent = 'Greed'; fngLabel.className = 'stat-sub neutral'; }
+    else { fngEl.style.color = '#ff4757'; fngLabel.textContent = 'Extreme Greed'; fngLabel.className = 'stat-sub overbought'; fngCard.classList.add('overbought'); }
+  }
+
+  // Z-Score for selected asset
+  if (DATA && DATA.prices && DATA.prices.BTC && DATA.prices[SIG.asset]) {
+    var weeklyZ = calcRatioAndZScore(DATA.prices.BTC, DATA.prices[SIG.asset], SIG.zPeriod);
+    var lastZ = null;
+    for (var i = weeklyZ.length - 1; i >= 0; i--) { if (weeklyZ[i].z != null) { lastZ = weeklyZ[i].z; break; } }
+    var zEl = document.getElementById('sig-z-val');
+    var zLabel = document.getElementById('sig-z-label');
+    var zCard = document.getElementById('sig-card-z');
+    zCard.classList.remove('oversold', 'overbought');
+    if (lastZ != null) {
+      zEl.textContent = (lastZ >= 0 ? '+' : '') + lastZ.toFixed(2);
+      if (lastZ <= SIG.zBuy) { zEl.style.color = '#00d4aa'; zLabel.textContent = 'Oversold'; zLabel.className = 'stat-sub oversold'; zCard.classList.add('oversold'); }
+      else if (lastZ >= SIG.zSell) { zEl.style.color = '#ff4757'; zLabel.textContent = 'Overbought'; zLabel.className = 'stat-sub overbought'; zCard.classList.add('overbought'); }
+      else { zEl.style.color = '#ffffff'; zLabel.textContent = 'BTC/' + SIG.asset; zLabel.className = 'stat-sub neutral'; }
+    }
+  }
+
+  // Current signal
+  var sigEl = document.getElementById('sig-signal-val');
+  var sigLabel = document.getElementById('sig-signal-label');
+  var sigCard = document.getElementById('sig-card-signal');
+  sigCard.classList.remove('oversold', 'overbought');
+  var signals = computeSignals();
+  if (signals.buys.length > 0) {
+    var lastBuy = signals.buys[signals.buys.length - 1];
+    var lastSell = signals.sells[signals.sells.length - 1];
+    if (lastBuy != null) {
+      sigEl.textContent = '매수'; sigEl.style.color = '#00d4aa';
+      sigLabel.textContent = 'BUY SIGNAL'; sigLabel.className = 'stat-sub oversold'; sigCard.classList.add('oversold');
+    } else if (lastSell != null) {
+      sigEl.textContent = '매도'; sigEl.style.color = '#ff4757';
+      sigLabel.textContent = 'SELL SIGNAL'; sigLabel.className = 'stat-sub overbought'; sigCard.classList.add('overbought');
+    } else {
+      sigEl.textContent = '중립'; sigEl.style.color = '#ffffff';
+      sigLabel.textContent = '조건 미충족'; sigLabel.className = 'stat-sub neutral';
+    }
+  }
+}
+
+// ===== Signal Charts =====
+var _sigSyncing = false;
+var COMMON_TOOLTIP = {
+  backgroundColor: 'rgba(10,10,10,0.95)', titleColor: '#fff', bodyColor: '#ccc',
+  borderColor: '#333', borderWidth: 1,
+  titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
+  bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
+  padding: 12, cornerRadius: 8,
+  callbacks: { title: function(ctx) { var d = new Date(ctx[0].raw.x + 'T00:00:00'); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } }
+};
+
+function sigTimeConfig() {
+  var u = 'year', t = 14;
+  if (SIG.range === '1y') { u = 'month'; t = 12; }
+  else if (SIG.range === '3y') { u = 'quarter'; t = 10; }
+  return { unit: u, ticks: t };
+}
+
+function renderAllSignalCharts() {
+  var signals = computeSignals();
+  renderSigBtcChart(signals);
+  renderSigFngChart(signals);
+  renderSigZChart(signals);
+  updateSigStatCards();
+
+  var buyCount = signals.buys.filter(function(v) { return v != null; }).length;
+  var sellCount = signals.sells.filter(function(v) { return v != null; }).length;
+  document.getElementById('buy-count').textContent = buyCount;
+  document.getElementById('sell-count').textContent = sellCount;
+}
+
+function renderSigBtcChart(signals) {
+  if (SIG.btcChart) { SIG.btcChart.destroy(); SIG.btcChart = null; }
+  var tc = sigTimeConfig();
+  var btcPoints = [], buyPoints = [], sellPoints = [];
+  for (var i = 0; i < signals.dates.length; i++) {
+    btcPoints.push({ x: signals.dates[i], y: signals.btc[i] });
+    if (signals.buys[i] != null) buyPoints.push({ x: signals.dates[i], y: signals.buys[i] });
+    if (signals.sells[i] != null) sellPoints.push({ x: signals.dates[i], y: signals.sells[i] });
+  }
+
+  var ctx = document.getElementById('sig-btc-chart').getContext('2d');
+  SIG.btcChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          label: 'BTC', data: btcPoints, borderColor: '#ffd43b', backgroundColor: function(ctx) {
+            var c = ctx.chart; if (!c.chartArea) return 'rgba(255,212,59,0.05)';
+            var g = c.ctx.createLinearGradient(0, c.chartArea.top, 0, c.chartArea.bottom);
+            g.addColorStop(0, 'rgba(255,212,59,0.12)'); g.addColorStop(1, 'rgba(255,212,59,0.01)'); return g;
+          },
+          fill: true, borderWidth: 2, tension: 0.15, pointRadius: 0, pointHoverRadius: 4, order: 2
+        },
+        {
+          label: '매수', data: buyPoints, type: 'scatter',
+          backgroundColor: '#00d4aa', borderColor: '#00d4aa',
+          pointRadius: 6, pointStyle: 'triangle', pointHoverRadius: 8, order: 1
+        },
+        {
+          label: '매도', data: sellPoints, type: 'scatter',
+          backgroundColor: '#ff4757', borderColor: '#ff4757',
+          pointRadius: 6, pointStyle: 'triangle', pointRotation: 180, pointHoverRadius: 8, order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign({}, COMMON_TOOLTIP, {
+          callbacks: {
+            title: COMMON_TOOLTIP.callbacks.title,
+            label: function(ctx) {
+              if (ctx.dataset.label === 'BTC') return '  BTC: $' + Number(ctx.raw.y).toLocaleString();
+              return '  ' + ctx.dataset.label + ': $' + Number(ctx.raw.y).toLocaleString();
+            }
+          }
+        }),
+        zoom: {
+          pan: { enabled: true, mode: 'x', threshold: 5, onPanComplete: function() { sigSyncFrom('btc'); } },
+          zoom: { wheel: { enabled: true, speed: 0.1 }, pinch: { enabled: true }, mode: 'x', onZoomComplete: function() { sigSyncFrom('btc'); } }
+        }
+      },
+      scales: {
+        x: { type: 'time', time: { unit: tc.unit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
+          grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, maxTicksLimit: tc.ticks }, border: { color: 'rgba(255,255,255,0.06)' } },
+        y: { type: 'logarithmic', position: 'right', grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 },
+            callback: function(v) { if (v >= 1000) return '$' + (v / 1000).toFixed(0) + 'k'; return '$' + v.toFixed(0); } },
+          border: { color: 'rgba(255,255,255,0.06)' } }
+      }
+    }
+  });
+}
+
+function renderSigFngChart(signals) {
+  if (SIG.fngChart) { SIG.fngChart.destroy(); SIG.fngChart = null; }
+  var tc = sigTimeConfig();
+  var points = [];
+  for (var i = 0; i < signals.dates.length; i++) {
+    if (signals.fng[i] != null) points.push({ x: signals.dates[i], y: signals.fng[i] });
+  }
+
+  var ctx = document.getElementById('sig-fng-chart').getContext('2d');
+  SIG.fngChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [{
+        label: 'F&G', data: points, borderWidth: 1.5, tension: 0.2,
+        pointRadius: 0, pointHoverRadius: 4, fill: false,
+        segment: {
+          borderColor: function(ctx) {
+            var y = ctx.p1.parsed.y;
+            if (y <= 25) return '#00d4aa';
+            if (y <= 45) return '#4dabf7';
+            if (y <= 55) return '#888';
+            if (y <= 75) return '#ffd43b';
+            return '#ff4757';
+          }
+        },
+        borderColor: '#888'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign({}, COMMON_TOOLTIP, {
+          callbacks: {
+            title: COMMON_TOOLTIP.callbacks.title,
+            label: function(ctx) { return '  F&G: ' + ctx.raw.y; }
+          }
+        }),
+        zoom: {
+          pan: { enabled: true, mode: 'x', threshold: 5, onPanComplete: function() { sigSyncFrom('fng'); } },
+          zoom: { wheel: { enabled: true, speed: 0.1 }, pinch: { enabled: true }, mode: 'x', onZoomComplete: function() { sigSyncFrom('fng'); } }
+        }
+      },
+      scales: {
+        x: { type: 'time', time: { unit: tc.unit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
+          grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, maxTicksLimit: tc.ticks }, border: { color: 'rgba(255,255,255,0.06)' } },
+        y: { position: 'right', min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, stepSize: 25 },
+          border: { color: 'rgba(255,255,255,0.06)' } }
+      }
+    },
+    plugins: [
+      { id: 'fngThresholdLines', beforeDraw: function(chart) {
+          var ctx = chart.ctx, area = chart.chartArea, yScale = chart.scales.y; if (!area) return;
+          ctx.save();
+          // Buy threshold line
+          var yBuy = yScale.getPixelForValue(SIG.fngBuy);
+          ctx.strokeStyle = 'rgba(0,212,170,0.4)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+          ctx.beginPath(); ctx.moveTo(area.left, yBuy); ctx.lineTo(area.right, yBuy); ctx.stroke();
+          // Buy zone
+          var yBottom = yScale.getPixelForValue(0);
+          ctx.fillStyle = 'rgba(0,212,170,0.05)'; ctx.fillRect(area.left, yBuy, area.width, yBottom - yBuy);
+          // Sell threshold line
+          var ySell = yScale.getPixelForValue(SIG.fngSell);
+          ctx.strokeStyle = 'rgba(255,71,87,0.4)'; ctx.setLineDash([4, 4]);
+          ctx.beginPath(); ctx.moveTo(area.left, ySell); ctx.lineTo(area.right, ySell); ctx.stroke();
+          // Sell zone
+          var yTop = yScale.getPixelForValue(100);
+          ctx.fillStyle = 'rgba(255,71,87,0.05)'; ctx.fillRect(area.left, yTop, area.width, ySell - yTop);
+          ctx.restore();
+      }}
+    ]
+  });
+}
+
+function renderSigZChart(signals) {
+  if (SIG.zChart) { SIG.zChart.destroy(); SIG.zChart = null; }
+  var tc = sigTimeConfig();
+  var points = [];
+  for (var i = 0; i < signals.dates.length; i++) {
+    if (signals.z[i] != null) points.push({ x: signals.dates[i], y: signals.z[i] });
+  }
+  var assetColor = ASSET_COLORS[SIG.asset] ? ASSET_COLORS[SIG.asset].line : '#4dabf7';
+
+  var ctx = document.getElementById('sig-z-chart').getContext('2d');
+  SIG.zChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [{
+        label: 'Z-Score', data: points, borderColor: assetColor, backgroundColor: 'transparent',
+        fill: false, borderWidth: 2, tension: 0.2, pointRadius: 0, pointHoverRadius: 5,
+        segment: { borderColor: function(ctx) { var y = ctx.p1.parsed.y; if (y <= SIG.zBuy) return '#00d4aa'; if (y >= SIG.zSell) return '#ff4757'; return assetColor; } }
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign({}, COMMON_TOOLTIP, {
+          callbacks: {
+            title: COMMON_TOOLTIP.callbacks.title,
+            label: function(ctx) { var z = ctx.raw.y; return '  Z: ' + (z >= 0 ? '+' : '') + z.toFixed(2); }
+          }
+        }),
+        zoom: {
+          pan: { enabled: true, mode: 'x', threshold: 5, onPanComplete: function() { sigSyncFrom('z'); } },
+          zoom: { wheel: { enabled: true, speed: 0.1 }, pinch: { enabled: true }, mode: 'x', onZoomComplete: function() { sigSyncFrom('z'); } }
+        }
+      },
+      scales: {
+        x: { type: 'time', time: { unit: tc.unit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
+          grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, maxTicksLimit: tc.ticks }, border: { color: 'rgba(255,255,255,0.06)' } },
+        y: { position: 'right', grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, stepSize: 1, callback: function(v) { return (v >= 0 ? '+' : '') + v.toFixed(0); } },
+          border: { color: 'rgba(255,255,255,0.06)' } }
+      }
+    },
+    plugins: [
+      { id: 'sigZeroLine', beforeDraw: function(chart) {
+          var ctx = chart.ctx, area = chart.chartArea; if (!area) return;
+          var y0 = chart.scales.y.getPixelForValue(0); ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+          ctx.lineWidth = 1; ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.moveTo(area.left, y0); ctx.lineTo(area.right, y0); ctx.stroke(); ctx.restore();
+      }},
+      { id: 'sigZThresholdZones', beforeDraw: function(chart) {
+          var ctx = chart.ctx, area = chart.chartArea, yScale = chart.scales.y; if (!area) return; ctx.save();
+          var yBuyTh = yScale.getPixelForValue(SIG.zBuy), yMin = yScale.getPixelForValue(yScale.min);
+          if (yBuyTh < yMin) {
+            ctx.fillStyle = 'rgba(0,212,170,0.06)'; ctx.fillRect(area.left, yBuyTh, area.width, yMin - yBuyTh);
+            ctx.strokeStyle = 'rgba(0,212,170,0.25)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+            ctx.beginPath(); ctx.moveTo(area.left, yBuyTh); ctx.lineTo(area.right, yBuyTh); ctx.stroke();
+          }
+          var ySellTh = yScale.getPixelForValue(SIG.zSell), yMax = yScale.getPixelForValue(yScale.max);
+          if (ySellTh > yMax) {
+            ctx.fillStyle = 'rgba(255,71,87,0.06)'; ctx.fillRect(area.left, yMax, area.width, ySellTh - yMax);
+            ctx.strokeStyle = 'rgba(255,71,87,0.25)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+            ctx.beginPath(); ctx.moveTo(area.left, ySellTh); ctx.lineTo(area.right, ySellTh); ctx.stroke();
+          }
+          ctx.restore();
+      }}
+    ]
+  });
+
+  var periodLabel = SIG.zPeriod === 26 ? '26주' : '52주';
+  document.getElementById('sig-z-title').textContent = 'Z-Score (' + periodLabel + ')';
+  document.getElementById('sig-z-subtitle').textContent = 'BTC/' + SIG.asset + ' 기준';
+}
+
+// Signal zoom sync (3 charts)
+function sigSyncFrom(source) {
+  if (_sigSyncing) return; _sigSyncing = true;
+  var charts = { btc: SIG.btcChart, fng: SIG.fngChart, z: SIG.zChart };
+  var src = charts[source];
+  if (!src) { _sigSyncing = false; return; }
+  var xMin = src.scales.x.min, xMax = src.scales.x.max;
+  ['btc', 'fng', 'z'].forEach(function(key) {
+    if (key !== source && charts[key]) {
+      charts[key].options.scales.x.min = xMin;
+      charts[key].options.scales.x.max = xMax;
+      charts[key].update('none');
+    }
+  });
+  document.getElementById('sig-reset-zoom-btn').style.display = '';
+  _sigSyncing = false;
+}
+
+function sigResetZoom() {
+  if (SIG.btcChart) SIG.btcChart.resetZoom();
+  if (SIG.fngChart) SIG.fngChart.resetZoom();
+  if (SIG.zChart) SIG.zChart.resetZoom();
+  document.getElementById('sig-reset-zoom-btn').style.display = 'none';
+}
+
+// Signal Controls
+function setSigAsset(a) {
+  SIG.asset = a;
+  document.querySelectorAll('[data-sig-asset]').forEach(function(btn) { btn.classList.toggle('active', btn.dataset.sigAsset === a); });
+  SIG.rendered = false;
+  if (document.getElementById('tab-signal').classList.contains('active')) { renderAllSignalCharts(); SIG.rendered = true; }
+}
+function setSigZPeriod(p) {
+  SIG.zPeriod = p;
+  document.querySelectorAll('[data-sig-period]').forEach(function(btn) { btn.classList.toggle('active', parseInt(btn.dataset.sigPeriod) === p); });
+  SIG.rendered = false;
+  if (document.getElementById('tab-signal').classList.contains('active')) { renderAllSignalCharts(); SIG.rendered = true; }
+}
+function setSigRange(r) {
+  SIG.range = r;
+  document.querySelectorAll('[data-sig-range]').forEach(function(btn) { btn.classList.toggle('active', btn.dataset.sigRange === r); });
+  SIG.rendered = false;
+  if (document.getElementById('tab-signal').classList.contains('active')) { renderAllSignalCharts(); SIG.rendered = true; }
+}
+function setSigMode(m) {
+  SIG.mode = m;
+  document.getElementById('mode-and-btn').classList.toggle('active', m === 'AND');
+  document.getElementById('mode-or-btn').classList.toggle('active', m === 'OR');
+  if (document.getElementById('tab-signal').classList.contains('active')) renderAllSignalCharts();
+}
+function onFngBuyChange(v) {
+  v = Math.max(0, Math.min(100, parseInt(v) || 0));
+  SIG.fngBuy = v;
+  document.getElementById('fng-buy-slider').value = v;
+  document.getElementById('fng-buy-input').value = v;
+  if (document.getElementById('tab-signal').classList.contains('active')) renderAllSignalCharts();
+}
+function onFngSellChange(v) {
+  v = Math.max(0, Math.min(100, parseInt(v) || 0));
+  SIG.fngSell = v;
+  document.getElementById('fng-sell-slider').value = v;
+  document.getElementById('fng-sell-input').value = v;
+  if (document.getElementById('tab-signal').classList.contains('active')) renderAllSignalCharts();
+}
+function onZThresholdChange() {
+  SIG.zBuy = parseFloat(document.getElementById('z-buy-input').value) || -2;
+  SIG.zSell = parseFloat(document.getElementById('z-sell-input').value) || 2;
+  if (document.getElementById('tab-signal').classList.contains('active')) renderAllSignalCharts();
+}
+
+// ============================================================
+// Binance WebSocket
+// ============================================================
 var _ws = null, _wsRetry = 0;
 function connectBinance() {
   try {
@@ -736,14 +1255,14 @@ function connectBinance() {
           '<span class="live-dot"></span>';
       } catch(ex) {}
     };
-    _ws.onclose = function() {
-      if (_wsRetry < 10) setTimeout(connectBinance, Math.min(3000 * Math.pow(1.5, _wsRetry++), 30000));
-    };
+    _ws.onclose = function() { if (_wsRetry < 10) setTimeout(connectBinance, Math.min(3000 * Math.pow(1.5, _wsRetry++), 30000)); };
     _ws.onerror = function() { _ws.close(); };
   } catch(e) {}
 }
 
-// ===== Share =====
+// ============================================================
+// Share
+// ============================================================
 var SHARE_URL = 'https://herdvibe.com/128';
 var SHARE_TITLE = 'BTC 상대가치 Z-Score 대시보드';
 
@@ -759,12 +1278,8 @@ function shareKakao() {
   if (!window.Kakao || !Kakao.isInitialized()) return;
   Kakao.Share.sendDefault({
     objectType: 'feed',
-    content: {
-      title: SHARE_TITLE,
-      description: 'BTC: $' + Number(DATA.btcLatest).toLocaleString() + ' \u00b7 SPY/QQQ/IGV/GLD 대비 Z-Score',
-      imageUrl: 'https://herdvibe.com/og-image.png',
-      link: { mobileWebUrl: SHARE_URL, webUrl: SHARE_URL }
-    },
+    content: { title: SHARE_TITLE, description: 'BTC: $' + Number(DATA.btcLatest).toLocaleString() + ' \u00b7 SPY/QQQ/IGV/GLD 대비 Z-Score',
+      imageUrl: 'https://herdvibe.com/og-image.png', link: { mobileWebUrl: SHARE_URL, webUrl: SHARE_URL } },
     buttons: [{ title: '대시보드 보기', link: { mobileWebUrl: SHARE_URL, webUrl: SHARE_URL } }]
   });
 }
