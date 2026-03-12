@@ -767,11 +767,23 @@ var SIG = {
 };
 
 var FNG_DATA_URL = 'https://kittycapital.github.io/bitcoin-feargreed-/data.json';
+var BTC_HISTORY_URL = 'https://kittycapital.github.io/bitcoin-feargreed-/btc_history.json';
 
 async function loadSignalData() {
   try {
-    var resp = await fetch(FNG_DATA_URL + '?v=' + Date.now());
-    SIG.data = await resp.json();
+    var [fngResp, btcResp] = await Promise.all([
+      fetch(FNG_DATA_URL + '?v=' + Date.now()),
+      fetch(BTC_HISTORY_URL + '?v=' + Date.now())
+    ]);
+    SIG.data = await fngResp.json();
+    var btcHistory = await btcResp.json(); // {"2014-09-17": 457.33, ...}
+
+    // Fill null btc_prices from btc_history.json
+    for (var i = 0; i < SIG.data.dates.length; i++) {
+      if (SIG.data.btc_prices[i] == null && btcHistory[SIG.data.dates[i]] != null) {
+        SIG.data.btc_prices[i] = btcHistory[SIG.data.dates[i]];
+      }
+    }
   } catch (e) {
     console.warn('F&G data load failed:', e);
     return;
