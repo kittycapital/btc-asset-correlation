@@ -954,9 +954,15 @@ function sigTimeConfig() {
 
 function renderAllSignalCharts() {
   var signals = computeSignals();
-  renderSigBtcChart(signals);
-  renderSigFngChart(signals);
-  renderSigZChart(signals);
+
+  // Compute shared x-axis range so all 3 charts align
+  var xMin = signals.dates.length > 0 ? signals.dates[0] : null;
+  var xMax = signals.dates.length > 0 ? signals.dates[signals.dates.length - 1] : null;
+  var xRange = { min: xMin, max: xMax };
+
+  renderSigBtcChart(signals, xRange);
+  renderSigFngChart(signals, xRange);
+  renderSigZChart(signals, xRange);
   updateSigStatCards();
 
   var buyCount = signals.buys.filter(function(v) { return v != null; }).length;
@@ -965,7 +971,7 @@ function renderAllSignalCharts() {
   document.getElementById('sell-count').textContent = sellCount;
 }
 
-function renderSigBtcChart(signals) {
+function renderSigBtcChart(signals, xRange) {
   if (SIG.btcChart) { SIG.btcChart.destroy(); SIG.btcChart = null; }
   var tc = sigTimeConfig();
   var btcPoints = [], buyPoints = [], sellPoints = [];
@@ -1020,7 +1026,7 @@ function renderSigBtcChart(signals) {
         }
       },
       scales: {
-        x: { type: 'time', time: { unit: tc.unit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
+        x: { type: 'time', min: xRange.min, max: xRange.max, time: { unit: tc.unit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
           grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, maxTicksLimit: tc.ticks }, border: { color: 'rgba(255,255,255,0.06)' } },
         y: { type: 'logarithmic', position: 'right', grid: { color: 'rgba(255,255,255,0.04)' },
           ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 },
@@ -1031,7 +1037,7 @@ function renderSigBtcChart(signals) {
   });
 }
 
-function renderSigFngChart(signals) {
+function renderSigFngChart(signals, xRange) {
   if (SIG.fngChart) { SIG.fngChart.destroy(); SIG.fngChart = null; }
   var tc = sigTimeConfig();
   var points = [];
@@ -1076,7 +1082,7 @@ function renderSigFngChart(signals) {
         }
       },
       scales: {
-        x: { type: 'time', time: { unit: tc.unit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
+        x: { type: 'time', min: xRange.min, max: xRange.max, time: { unit: tc.unit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
           grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, maxTicksLimit: tc.ticks }, border: { color: 'rgba(255,255,255,0.06)' } },
         y: { position: 'right', min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.04)' },
           ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, stepSize: 25 },
@@ -1107,7 +1113,7 @@ function renderSigFngChart(signals) {
   });
 }
 
-function renderSigZChart(signals) {
+function renderSigZChart(signals, xRange) {
   if (SIG.zChart) { SIG.zChart.destroy(); SIG.zChart = null; }
   var tc = sigTimeConfig();
   var points = [];
@@ -1143,7 +1149,7 @@ function renderSigZChart(signals) {
         }
       },
       scales: {
-        x: { type: 'time', time: { unit: tc.unit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
+        x: { type: 'time', min: xRange.min, max: xRange.max, time: { unit: tc.unit, displayFormats: { month: 'MMM yyyy', quarter: 'MMM yyyy', year: 'yyyy' } },
           grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, maxTicksLimit: tc.ticks }, border: { color: 'rgba(255,255,255,0.06)' } },
         y: { position: 'right', grid: { color: 'rgba(255,255,255,0.04)' },
           ticks: { color: '#555', font: { family: "'JetBrains Mono', monospace", size: 10 }, stepSize: 1, callback: function(v) { return (v >= 0 ? '+' : '') + v.toFixed(0); } },
